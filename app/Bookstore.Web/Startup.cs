@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+using Microsoft.AspNetCore.Owin;
+using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartup(typeof(Bookstore.Web.Startup))]

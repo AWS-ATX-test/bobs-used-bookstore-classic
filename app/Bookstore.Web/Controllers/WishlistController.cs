@@ -1,13 +1,14 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
-using Bookstore.Domain.Customers;
-using Bookstore.Domain.Carts;
+using Bookstore.Domain;
 using Bookstore.Web.ViewModel.Wishlist;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
+
 
 namespace Bookstore.Web.Controllers
 {
-    [AllowAnonymous]
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public class WishlistController : Controller
     {
         private readonly ICustomerService customerService;

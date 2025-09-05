@@ -1,21 +1,20 @@
-﻿using Bookstore.Domain.Addresses;
-using Bookstore.Domain.Customers;
+using Bookstore.Domain.Addresses;
 using Bookstore.Web.Helpers;
 using Bookstore.Web.ViewModel.Address;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
+
 
 namespace Bookstore.Web.Controllers
 {
     public class AddressController : Controller
     {
         private readonly IAddressService addressService;
-        private readonly ICustomerService customerService;
 
-        public AddressController(IAddressService addressService, ICustomerService customerService)
+        public AddressController(IAddressService addressService)
         {
             this.addressService = addressService;
-            this.customerService = customerService;
         }
 
         public async Task<ActionResult> Index()

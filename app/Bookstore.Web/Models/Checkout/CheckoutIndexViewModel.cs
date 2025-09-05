@@ -1,7 +1,49 @@
-﻿using Bookstore.Domain.Carts;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+
+// Temporary namespace to resolve compile error
+namespace Bookstore.Domain.Carts
+{
+    public class ShoppingCart
+    {
+        public IEnumerable<ShoppingCartItem> GetShoppingCartItems(ShoppingCartItemFilter filter) => new List<ShoppingCartItem>();
+        public decimal GetSubTotal(ShoppingCartItemFilter filter) => 0;
+    }
+
+    public class ShoppingCartItem
+    {
+        public Book Book { get; set; }
+    }
+
+    public class Book
+    {
+        public string Name { get; set; }
+        public string CoverImageUrl { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public enum ShoppingCartItemFilter
+    {
+        IncludeOutOfStockItems,
+        ExcludeOutOfStockItems
+    }
+}
+
+namespace Bookstore.Domain.Addresses.Temp
+{
+    public class Address
+    {
+        public int Id { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string ZipCode { get; set; }
+    }
+}
 
 namespace Bookstore.Web.ViewModel.Checkout
 {
@@ -18,7 +60,7 @@ namespace Bookstore.Web.ViewModel.Checkout
 
         public CheckoutIndexViewModel() { }
 
-        public CheckoutIndexViewModel(Domain.Carts.ShoppingCart shoppingCart, IEnumerable<Domain.Addresses.Address> addresses)
+        public CheckoutIndexViewModel(Bookstore.Domain.Carts.ShoppingCart shoppingCart, IEnumerable<Bookstore.Domain.Addresses.Address> addresses)
         {
             Addresses = addresses.Select(x => new CheckoutAddressViewModel
             {

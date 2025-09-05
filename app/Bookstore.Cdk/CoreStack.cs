@@ -6,10 +6,15 @@ using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.SSM;
 using Amazon.CDK.CustomResources;
-using Bookstore.Common;
 using Constructs;
 
 namespace Bookstore.Cdk;
+
+// Adding Constants class directly in the Bookstore.Cdk namespace to fix the missing reference
+internal static class Constants
+{
+    public const string AppName = "Bookstore";
+}
 
 public class CoreStack : Stack
 {

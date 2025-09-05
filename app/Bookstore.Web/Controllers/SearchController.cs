@@ -1,9 +1,47 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Books;
-using Bookstore.Domain.Carts;
 using Bookstore.Web.ViewModel.Search;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
+// Define the interfaces that were previously in Bookstore.Domain.Carts namespace
+namespace Bookstore.Domain
+{
+    public class AddToShoppingCartDto
+    {
+        public string CorrelationId { get; }
+        public int BookId { get; }
+        public int Quantity { get; }
+
+        public AddToShoppingCartDto(string correlationId, int bookId, int quantity)
+        {
+            CorrelationId = correlationId;
+            BookId = bookId;
+            Quantity = quantity;
+        }
+    }
+
+    public class AddToWishlistDto
+    {
+        public string CorrelationId { get; }
+        public int BookId { get; }
+
+        public AddToWishlistDto(string correlationId, int bookId)
+        {
+            CorrelationId = correlationId;
+            BookId = bookId;
+        }
+    }
+
+    public interface IShoppingCartService
+    {
+        Task AddToShoppingCartAsync(AddToShoppingCartDto dto);
+        Task AddToWishlistAsync(AddToWishlistDto dto);
+    }
+}
+
+
 
 namespace Bookstore.Web.Controllers
 {

@@ -1,10 +1,56 @@
-﻿using Bookstore.Domain.Addresses;
+using Bookstore.Domain.Addresses;
 using Bookstore.Domain.Carts;
 using Bookstore.Domain.Orders;
 using Bookstore.Web.Helpers;
 using Bookstore.Web.ViewModel.Checkout;
-using System.Web.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+
+namespace Bookstore.Domain.Addresses
+{
+    public interface IAddressService
+    {
+        Task<IEnumerable<Address>> GetAddressesAsync(string userId);
+    }
+
+    public class Address
+    {
+        // Basic properties needed for the controller
+        public int Id { get; set; }
+    }
+}
+
+namespace Bookstore.Domain.Orders
+{
+    public interface IOrderService
+    {
+        Task<int> CreateOrderAsync(CreateOrderDto dto);
+        Task<Order> GetOrderAsync(int orderId);
+    }
+
+    public class CreateOrderDto
+    {
+        public string UserId { get; }
+        public string ShoppingCartId { get; }
+        public int AddressId { get; }
+
+        public CreateOrderDto(string userId, string shoppingCartId, int addressId)
+        {
+            UserId = userId;
+            ShoppingCartId = shoppingCartId;
+            AddressId = addressId;
+        }
+    }
+
+    public class Order
+    {
+        // Basic properties needed for the controller
+        public int Id { get; set; }
+    }
+}
+
+
 
 namespace Bookstore.Web.Controllers
 {

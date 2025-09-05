@@ -1,10 +1,55 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Offers;
+using Bookstore.Domain;
+// TODO: Fix missing namespace reference
+// using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+// Adding enum for OfferStatus since it's not found in referenced namespaces
+namespace Bookstore.Domain
+{
+    public enum OfferStatus
+    {
+        Pending,
+        Accepted,
+        Rejected,
+        Completed
+    }
+
+    // Adding placeholder for Offer class
+    public class Offer
+    {
+        public int Id { get; set; }
+        public string BookName { get; set; }
+        public string Author { get; set; }
+        public ReferenceDataItem Genre { get; set; }
+        public Customer Customer { get; set; }
+        public OfferStatus OfferStatus { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public decimal BookPrice { get; set; }
+        public ReferenceDataItem Condition { get; set; }
+    }
+
+    // Adding placeholder for Customer class
+    public class Customer
+    {
+        public string FullName { get; set; }
+    }
+
+    // Adding interface for IPaginatedList since it's not found
+    public interface IPaginatedList<T>
+    {
+        int PageIndex { get; }
+        int TotalPages { get; }
+        bool HasPreviousPage { get; }
+        bool HasNextPage { get; }
+        int Count { get; }
+        IEnumerable<int> GetPageList(int maxSize);
+    }
+}
 
 namespace Bookstore.Web.Areas.Admin.Models.Offers
 {
@@ -67,5 +112,14 @@ namespace Bookstore.Web.Areas.Admin.Models.Offers
         public decimal OfferPrice { get; internal set; }
 
         public string Condition { get; internal set; }
+    }
+
+    public class OfferFilters
+    {
+        public string BookName { get; set; }
+        public string Author { get; set; }
+        public int? GenreId { get; set; }
+        public int? ConditionId { get; set; }
+        public OfferStatus? Status { get; set; }
     }
 }

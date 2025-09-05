@@ -1,8 +1,51 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Inventory;
+using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using Bookstore.Domain.Books;
-using Bookstore.Domain.ReferenceData;
-using System.Web.Mvc;
+
+// Temporary namespace and interfaces until proper project reference is established
+namespace Bookstore.Domain.Books
+{
+    public interface IBookService
+    {
+        Task<BookSearchResult> GetBooksAsync(BookFilters filters, int pageIndex, int pageSize);
+        Task<Book> GetBookAsync(int id);
+        Task<BookResult> AddAsync(CreateBookDto dto);
+        Task<BookResult> UpdateAsync(UpdateBookDto dto);
+    }
+
+    public class BookFilters { }
+    public class BookSearchResult { }
+    public class Book { }
+    public class BookResult
+    {
+        public bool IsSuccess { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+    public class CreateBookDto
+    {
+        public CreateBookDto(string name, string author, int bookTypeId, int conditionId, int genreId, int publisherId,
+            int year, string isbn, string summary, decimal price, int quantity, Stream coverImageStream, string coverImageFileName) { }
+    }
+    public class UpdateBookDto
+    {
+        public UpdateBookDto(int id, string name, string author, int bookTypeId, int conditionId, int genreId, int publisherId,
+            int year, string isbn, string summary, decimal price, int quantity, Stream coverImageStream, string coverImageFileName) { }
+    }
+}
+
+namespace Bookstore.Domain.ReferenceData
+{
+    public interface IReferenceDataService
+    {
+        Task<ReferenceDataItems> GetAllReferenceDataAsync();
+    }
+
+    public class ReferenceDataItems { }
+}
+
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {

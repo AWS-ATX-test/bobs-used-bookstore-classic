@@ -1,9 +1,17 @@
-﻿using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
 
 namespace Bookstore.Web.Areas.Admin.Models.Orders
 {
+    public enum OrderStatus
+    {
+        Pending,
+        Processing,
+        Shipped,
+        Delivered,
+        Cancelled
+    }
+
     public class OrderDetailsViewModel
     {
         public int OrderId { get; set; }

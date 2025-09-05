@@ -1,8 +1,10 @@
-﻿using System.Web;
-using System.Web.Mvc;
+using System.Web;
 using System.Web.Optimization;
-using System.Web.Routing;
 using NLog;
+using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.AspNetCore.Routing;
+
 
 namespace Bookstore.Web
 {

@@ -1,12 +1,42 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
-using Bookstore.Domain.Customers;
-using Bookstore.Domain.Carts;
 using Bookstore.Web.ViewModel.ShoppingCart;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
+
+
 
 namespace Bookstore.Web.Controllers
 {
+    // Local interface definitions to replace the missing namespace
+    public interface ICustomerService
+    {
+    }
+
+    public interface IShoppingCartService
+    {
+        Task<ShoppingCart> GetShoppingCartAsync(string correlationId);
+        Task DeleteShoppingCartItemAsync(DeleteShoppingCartItemDto dto);
+    }
+
+    public class ShoppingCart
+    {
+        // Minimal implementation to support the controller
+    }
+
+    public class DeleteShoppingCartItemDto
+    {
+        public string CorrelationId { get; }
+        public int ShoppingCartItemId { get; }
+
+        public DeleteShoppingCartItemDto(string correlationId, int shoppingCartItemId)
+        {
+            CorrelationId = correlationId;
+            ShoppingCartItemId = shoppingCartItemId;
+        }
+    }
+
     [AllowAnonymous]
     public class ShoppingCartController : Controller
     {
