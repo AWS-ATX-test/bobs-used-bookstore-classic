@@ -1,13 +1,21 @@
-﻿using Bookstore.Domain.Addresses;
-using Bookstore.Domain.Carts;
+using Bookstore.Domain.Addresses;
 using Bookstore.Domain.Orders;
 using Bookstore.Web.Helpers;
 using Bookstore.Web.ViewModel.Checkout;
-using System.Web.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System;
+
+
 
 namespace Bookstore.Web.Controllers
 {
+    // Temporary interface declaration to resolve compilation error
+    public interface IShoppingCartService
+    {
+        Task<dynamic> GetShoppingCartAsync(Guid correlationId);
+    }
+
     public class CheckoutController : Controller
     {
         private readonly IAddressService addressService;

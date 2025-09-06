@@ -1,9 +1,43 @@
-﻿using Bookstore.Domain.Books;
+using Bookstore.Domain.Books;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.Orders;
 using Bookstore.Web.Areas.Admin.Models.Dashboard;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
+
+
+// Temporary namespace and interface to fix compilation error
+namespace Bookstore.Domain.Orders
+{
+    public interface IOrderService
+    {
+        Task<OrderStatistics> GetStatisticsAsync();
+    }
+
+    public class OrderStatistics
+    {
+        public int PastDueOrders { get; set; }
+        public int PendingOrders { get; set; }
+        public int OrdersThisMonth { get; set; }
+        public int OrdersTotal { get; set; }
+    }
+}
+
+namespace Bookstore.Domain.Offers
+{
+    public interface IOfferService
+    {
+        Task<OfferStatistics> GetStatisticsAsync();
+    }
+
+    public class OfferStatistics
+    {
+        public int PendingOffers { get; set; }
+        public int OffersThisMonth { get; set; }
+        public int OffersTotal { get; set; }
+    }
+}
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {

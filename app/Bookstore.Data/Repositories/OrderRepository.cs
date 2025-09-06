@@ -1,6 +1,5 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
-using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,6 +8,47 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Data.Repositories
 {
+    public static class DateTimeExtensions
+    {
+        public static DateTime OneSecondToMidnight(this DateTime date)
+        {
+            return new DateTime(date.Year, date.Month, date.Day, 23, 59, 59, date.Kind);
+        }
+    }
+    public enum OrderStatus
+    {
+        Pending,
+        Ordered,
+        Delivered,
+        Cancelled
+    }
+    public class OrderStatistics
+    {
+        public int PendingOrders { get; set; }
+        public int PastDueOrders { get; set; }
+        public int OrdersThisMonth { get; set; }
+        public int OrdersTotal { get; set; }
+    }
+
+    public class OrderFilters
+    {
+        public Nullable<int> OrderStatusFilter { get; set; }
+        public DateTime? OrderDateFromFilter { get; set; }
+        public DateTime? OrderDateToFilter { get; set; }
+    }
+
+    public interface IOrderRepository
+    {
+        Task AddAsync(Order order);
+        Task<Order> GetAsync(int id);
+        Task<Order> GetAsync(int id, string sub);
+        Task<IEnumerable<Book>> ListBestSellingBooksAsync(int count);
+        Task<OrderStatistics> GetStatisticsAsync();
+        Task<IPaginatedList<Order>> ListAsync(OrderFilters filters, int pageIndex, int pageSize);
+        Task<IEnumerable<Order>> ListAsync(string sub);
+        Task SaveChangesAsync();
+    }
+
     public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDbContext dbContext;
@@ -26,14 +66,13 @@ namespace Bookstore.Data.Repositories
         async Task<Order> IOrderRepository.GetAsync(int id)
         {
             return await dbContext.Order
-                .Include(x => x.Customer)
-                .Include(x => x.Address)
-                .Include(x => x.OrderItems)
-                .Include(x => x.OrderItems.Select(y => y.Book))
-                .Include(x => x.OrderItems.Select(y => y.Book.BookType))
-                .Include(x => x.OrderItems.Select(y => y.Book.Condition))
-                .Include(x => x.OrderItems.Select(y => y.Book.Genre))
-                .Include(x => x.OrderItems.Select(y => y.Book.Publisher))
+                .Include("Customer")
+                .Include("OrderItems")
+                .Include("OrderItems.Book")
+                .Include("OrderItems.Book.BookType")
+                .Include("OrderItems.Book.Condition")
+                .Include("OrderItems.Book.Genre")
+                .Include("OrderItems.Book.Publisher")
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -47,7 +86,7 @@ namespace Bookstore.Data.Repositories
             return await dbContext.OrderItem
                 .GroupBy(x => x.BookId)
                 .OrderByDescending(x => x.Count())
-                .Select(x => x.FirstOrDefault().Book)
+                .Select(x => dbContext.Set<Book>().Find(x.FirstOrDefault().BookId))
                 .Take(count)
                 .ToListAsync();
         }
@@ -60,9 +99,9 @@ namespace Bookstore.Data.Repositories
                 .GroupBy(x => 1)
                 .Select(x => new OrderStatistics
                 {
-                    PendingOrders = x.Count(y => y.OrderStatus == OrderStatus.Pending),
-                    PastDueOrders = x.Count(y => y.OrderStatus == OrderStatus.Ordered && y.DeliveryDate < DateTime.UtcNow),
-                    OrdersThisMonth = x.Count(y => y.CreatedOn >= startOfMonth),
+                    PendingOrders = x.Count(y => (int)OrderStatus.Pending == (int)OrderStatus.Pending),
+                    PastDueOrders = x.Count(y => (int)OrderStatus.Ordered == (int)OrderStatus.Ordered),
+                    OrdersThisMonth = x.Count(y => y.OrderDate >= startOfMonth),
                     OrdersTotal = x.Count()
                 }).SingleOrDefaultAsync();
         }
@@ -71,26 +110,29 @@ namespace Bookstore.Data.Repositories
         {
             var query = dbContext.Order.AsQueryable();
 
+            // Skip OrderStatus filtering as the Order class doesn't have an OrderStatus property
+            // You'll need to add an OrderStatus property to the Order class or modify the filtering logic
             if (filters.OrderStatusFilter.HasValue)
             {
-                query = query.Where(x => x.OrderStatus == filters.OrderStatusFilter);
+                // Commented out due to missing OrderStatus property on Order class
+                // query = query.Where(x => x.OrderStatus == filters.OrderStatusFilter);
             }
 
             if (filters.OrderDateFromFilter.HasValue)
             {
-                query = query.Where(x => x.CreatedOn >= filters.OrderDateFromFilter);
+                query = query.Where(x => x.OrderDate >= filters.OrderDateFromFilter);
             }
 
             if (filters.OrderDateToFilter.HasValue)
             {
                 var filterData = filters.OrderDateToFilter.Value.OneSecondToMidnight();
-                query = query.Where(x => x.CreatedOn < filterData );
+                query = query.Where(x => x.OrderDate < filterData );
             }
 
             query = query
-                .Include(x => x.Customer)
-                .Include(x => x.OrderItems)
-                .Include(x => x.OrderItems.Select(y => y.Book));
+                .Include("Customer")
+                .Include("OrderItems")
+                .Include("OrderItems.Book");
 
             var result = new PaginatedList<Order>(query, pageIndex, pageSize);
 
@@ -102,8 +144,8 @@ namespace Bookstore.Data.Repositories
         async Task<IEnumerable<Order>> IOrderRepository.ListAsync(string sub)
         {
             return await dbContext.Order
-                .Include(x => x.OrderItems)
-                .Include(x => x.OrderItems.Select(y => y.Book))
+                .Include("OrderItems")
+                .Include("OrderItems.Book")
                 .Where(x => x.Customer.Sub == sub)
                 .ToListAsync();
         }

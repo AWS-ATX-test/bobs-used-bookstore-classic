@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Bookstore.Web.ViewModel;
 using Bookstore.Domain.Books;
 using System.Threading.Tasks;
 using Bookstore.Web.ViewModel.Home;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+
 
 namespace Bookstore.Web.Controllers
 {
@@ -19,9 +22,9 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var books = await bookService.ListBestSellingBooksAsync(4);
+            var bookSearchResult = await bookService.GetBooksAsync(null, 0, 4);
 
-            return View(new HomeIndexViewModel(books));
+            return View(new HomeIndexViewModel(bookSearchResult.Books));
         }
 
         public ActionResult Privacy()

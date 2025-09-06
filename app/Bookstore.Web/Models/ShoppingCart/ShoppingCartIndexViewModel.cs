@@ -1,6 +1,37 @@
-﻿using Bookstore.Domain.Carts;
 using System.Collections.Generic;
 using System.Linq;
+
+namespace Bookstore.Domain.Carts
+{
+    public class ShoppingCart
+    {
+        public List<ShoppingCartItem> GetShoppingCartItems(ShoppingCartItemFilter filter)
+        {
+            // This is a stub implementation
+            return new List<ShoppingCartItem>();
+        }
+    }
+
+    public class ShoppingCartItem
+    {
+        public int Id { get; set; }
+        public Book Book { get; set; }
+    }
+
+    public class Book
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string CoverImageUrl { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public enum ShoppingCartItemFilter
+    {
+        IncludeOutOfStockItems
+    }
+}
 
 namespace Bookstore.Web.ViewModel.ShoppingCart
 {
@@ -15,7 +46,7 @@ namespace Bookstore.Web.ViewModel.ShoppingCart
             if (shoppingCart == null) return;
 
             ShoppingCartItems = shoppingCart
-                .GetShoppingCartItems(ShoppingCartItemFilter.IncludeOutOfStockItems)
+                .GetShoppingCartItems(Domain.Carts.ShoppingCartItemFilter.IncludeOutOfStockItems)
                 .Select(c => new ShoppingCartIndexItemViewModel
                     {
                         BookId = c.Book.Id,

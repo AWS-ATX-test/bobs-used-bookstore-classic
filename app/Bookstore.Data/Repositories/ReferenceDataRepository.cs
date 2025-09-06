@@ -1,10 +1,26 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Books;
+using Bookstore.Domain;
 using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+namespace Bookstore.Domain.ReferenceData
+{
+    public class ReferenceDataFilters
+    {
+        public int? ReferenceDataType { get; set; }
+    }
+
+    public interface IReferenceDataRepository
+    {
+        Task AddAsync(ReferenceDataItem item);
+        Task<ReferenceDataItem> GetAsync(int id);
+        Task<IEnumerable<ReferenceDataItem>> FullListAsync();
+        Task<IPaginatedList<ReferenceDataItem>> ListAsync(ReferenceDataFilters filters, int pageIndex, int pageSize);
+        Task SaveChangesAsync();
+    }
+}
 
 namespace Bookstore.Data.Repositories
 {
@@ -38,7 +54,8 @@ namespace Bookstore.Data.Repositories
 
             if (filters.ReferenceDataType.HasValue)
             {
-                query = query.Where(x => x.DataType == filters.ReferenceDataType.Value);
+                int typeValue = filters.ReferenceDataType.Value;
+                query = query.Where(x => x.Type == typeValue.ToString());
             }
 
             var result = new PaginatedList<ReferenceDataItem>(query, pageIndex, pageSize);

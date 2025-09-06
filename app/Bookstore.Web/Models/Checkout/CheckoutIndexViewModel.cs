@@ -1,10 +1,35 @@
-﻿using Bookstore.Domain.Carts;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Bookstore.Web.ViewModel.Checkout
 {
+    // Define the required enums locally to avoid dependency on Bookstore.Domain.Carts
+    public enum ShoppingCartItemFilter
+    {
+        IncludeOutOfStockItems,
+        ExcludeOutOfStockItems
+    }
+
+    // Define interfaces to work with the domain objects
+    public interface IShoppingCart
+    {
+        IEnumerable<IShoppingCartItem> GetShoppingCartItems(ShoppingCartItemFilter filter);
+        decimal GetSubTotal(ShoppingCartItemFilter filter);
+    }
+
+    public interface IShoppingCartItem
+    {
+        IBook Book { get; }
+    }
+
+    public interface IBook
+    {
+        string Name { get; }
+        string CoverImageUrl { get; }
+        decimal Price { get; }
+        int Quantity { get; }
+    }
     public class CheckoutIndexViewModel
     {
         public decimal Total { get; set; }
@@ -18,7 +43,7 @@ namespace Bookstore.Web.ViewModel.Checkout
 
         public CheckoutIndexViewModel() { }
 
-        public CheckoutIndexViewModel(Domain.Carts.ShoppingCart shoppingCart, IEnumerable<Domain.Addresses.Address> addresses)
+        public CheckoutIndexViewModel(IShoppingCart shoppingCart, IEnumerable<Domain.Addresses.Address> addresses)
         {
             Addresses = addresses.Select(x => new CheckoutAddressViewModel
             {

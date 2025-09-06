@@ -1,13 +1,16 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Customers;
-using Bookstore.Domain.Carts;
 using Bookstore.Web.ViewModel.Wishlist;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+
+
 
 namespace Bookstore.Web.Controllers
 {
-    [AllowAnonymous]
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public class WishlistController : Controller
     {
         private readonly ICustomerService customerService;
@@ -21,7 +24,8 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(HttpContext.GetShoppingCartCorrelationId());
+            var correlationId = GetShoppingCartCorrelationId();
+            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(correlationId);
 
             return View(new WishlistIndexViewModel(shoppingCart));
         }
@@ -29,7 +33,8 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> MoveToShoppingCart(int shoppingCartItemId)
         {
-            var dto = new MoveWishlistItemToShoppingCartDto(HttpContext.GetShoppingCartCorrelationId(), shoppingCartItemId);
+            var correlationId = GetShoppingCartCorrelationId();
+            var dto = new MoveWishlistItemToShoppingCartDto(correlationId, shoppingCartItemId);
 
             await shoppingCartService.MoveWishlistItemToShoppingCartAsync(dto);
 
@@ -41,7 +46,8 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> MoveAllItemsToShoppingCart()
         {
-            var dto = new MoveAllWishlistItemsToShoppingCartDto(HttpContext.GetShoppingCartCorrelationId());
+            var correlationId = GetShoppingCartCorrelationId();
+            var dto = new MoveAllWishlistItemsToShoppingCartDto(correlationId);
 
             await shoppingCartService.MoveAllWishlistItemsToShoppingCartAsync(dto);
 
@@ -53,7 +59,8 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(int shoppingCartItemId)
         {
-            var dto = new DeleteShoppingCartItemDto(HttpContext.GetShoppingCartCorrelationId(), shoppingCartItemId);
+            var correlationId = GetShoppingCartCorrelationId();
+            var dto = new DeleteShoppingCartItemDto(correlationId, shoppingCartItemId);
 
             await shoppingCartService.DeleteShoppingCartItemAsync(dto);
 
@@ -65,6 +72,27 @@ namespace Bookstore.Web.Controllers
         public ActionResult Error()
         {
             return View();
+        }
+
+        private Guid GetShoppingCartCorrelationId()
+        {
+            // Try to get the correlation ID from session
+            string correlationIdStr = HttpContext.Session.GetString("ShoppingCartCorrelationId");
+
+            // If not found, we might need to create a new one
+            if (string.IsNullOrEmpty(correlationIdStr))
+            {
+                return Guid.NewGuid();
+            }
+
+            // Try to parse the string as a Guid
+            if (Guid.TryParse(correlationIdStr, out Guid correlationId))
+            {
+                return correlationId;
+            }
+
+            // If parsing fails, return a new Guid
+            return Guid.NewGuid();
         }
     }
 }

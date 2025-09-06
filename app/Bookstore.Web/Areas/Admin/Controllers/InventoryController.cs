@@ -1,8 +1,150 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Inventory;
+using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.Collections.Generic;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
-using System.Web.Mvc;
+
+// Temporary namespace and classes to fix compilation error
+namespace Bookstore.Domain.Books
+{
+    public interface IBookService
+    {
+        Task<BookSearchResult> GetBooksAsync(BookFilters filters, int pageIndex, int pageSize);
+        Task<Book> GetBookAsync(int id);
+        Task<BookResult> AddAsync(CreateBookDto dto);
+        Task<BookResult> UpdateAsync(UpdateBookDto dto);
+    }
+
+    public class BookResult
+    {
+        public bool IsSuccess { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
+    public class Book
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public int BookTypeId { get; set; }
+        public int ConditionId { get; set; }
+        public int GenreId { get; set; }
+        public int PublisherId { get; set; }
+        public int Year { get; set; }
+        public string ISBN { get; set; }
+        public string Summary { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string CoverImageUrl { get; set; }
+    }
+
+    public class BookSearchResult
+    {
+        public IEnumerable<Book> Books { get; set; }
+        public int TotalCount { get; set; }
+    }
+
+    public class BookFilters
+    {
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public int? BookTypeId { get; set; }
+        public int? ConditionId { get; set; }
+        public int? GenreId { get; set; }
+        public int? PublisherId { get; set; }
+    }
+
+    public class CreateBookDto
+    {
+        public CreateBookDto(string name, string author, int bookTypeId, int conditionId, int genreId, int publisherId,
+            int year, string isbn, string summary, decimal price, int quantity, Stream coverImageStream, string coverImageFileName)
+        {
+            Name = name;
+            Author = author;
+            BookTypeId = bookTypeId;
+            ConditionId = conditionId;
+            GenreId = genreId;
+            PublisherId = publisherId;
+            Year = year;
+            ISBN = isbn;
+            Summary = summary;
+            Price = price;
+            Quantity = quantity;
+            CoverImageStream = coverImageStream;
+            CoverImageFileName = coverImageFileName;
+        }
+
+        public string Name { get; }
+        public string Author { get; }
+        public int BookTypeId { get; }
+        public int ConditionId { get; }
+        public int GenreId { get; }
+        public int PublisherId { get; }
+        public int Year { get; }
+        public string ISBN { get; }
+        public string Summary { get; }
+        public decimal Price { get; }
+        public int Quantity { get; }
+        public Stream CoverImageStream { get; }
+        public string CoverImageFileName { get; }
+    }
+
+    public class UpdateBookDto
+    {
+        public UpdateBookDto(int id, string name, string author, int bookTypeId, int conditionId, int genreId, int publisherId,
+            int year, string isbn, string summary, decimal price, int quantity, Stream coverImageStream, string coverImageFileName)
+        {
+            Id = id;
+            Name = name;
+            Author = author;
+            BookTypeId = bookTypeId;
+            ConditionId = conditionId;
+            GenreId = genreId;
+            PublisherId = publisherId;
+            Year = year;
+            ISBN = isbn;
+            Summary = summary;
+            Price = price;
+            Quantity = quantity;
+            CoverImageStream = coverImageStream;
+            CoverImageFileName = coverImageFileName;
+        }
+
+        public int Id { get; }
+        public string Name { get; }
+        public string Author { get; }
+        public int BookTypeId { get; }
+        public int ConditionId { get; }
+        public int GenreId { get; }
+        public int PublisherId { get; }
+        public int Year { get; }
+        public string ISBN { get; }
+        public string Summary { get; }
+        public decimal Price { get; }
+        public int Quantity { get; }
+        public Stream CoverImageStream { get; }
+        public string CoverImageFileName { get; }
+    }
+}
+
+namespace Bookstore.Domain.ReferenceData
+{
+    public interface IReferenceDataService
+    {
+        Task<IEnumerable<ReferenceDataItem>> GetAllReferenceDataAsync();
+    }
+
+    public class ReferenceDataItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+    }
+}
+
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {

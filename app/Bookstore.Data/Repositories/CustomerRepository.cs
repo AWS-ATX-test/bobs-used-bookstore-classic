@@ -1,9 +1,26 @@
-﻿using Bookstore.Domain.Customers;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
+namespace Bookstore.Data
+{
+    public class Customer
+    {
+        public int Id { get; set; }
+        public string Sub { get; set; }
+        // Add other properties as needed
+    }
+}
+
 namespace Bookstore.Data.Repositories
 {
+    public interface ICustomerRepository
+    {
+        Task AddAsync(Customer customer);
+        Task<Customer> GetAsync(int id);
+        Task<Customer> GetAsync(string sub);
+        Task SaveChangesAsync();
+    }
+
     public class CustomerRepository : ICustomerRepository
     {
         private readonly ApplicationDbContext dbContext;

@@ -1,4 +1,3 @@
-﻿using Bookstore.Domain.Orders;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,17 +7,34 @@ namespace Bookstore.Web.ViewModel.Checkout
     {
         public IEnumerable<CheckoutFinishedItemViewModel> Items { get; set; } = new List<CheckoutFinishedItemViewModel>();
 
-        public CheckoutFinishedViewModel(Order order)
+        // Default constructor
+        public CheckoutFinishedViewModel() { }
+
+        // Constructor that accepts order items directly
+        public CheckoutFinishedViewModel(IEnumerable<OrderItemData> orderItems)
         {
-            Items = order.OrderItems.Select(x => new CheckoutFinishedItemViewModel
+            if (orderItems != null)
             {
-                BookId = x.Book.Id,
-                Bookname = x.Book.Name,
-                Price = x.Book.Price,
-                Quantity = x.Quantity,
-                Url = x.Book.CoverImageUrl
-            });
+                Items = orderItems.Select(x => new CheckoutFinishedItemViewModel
+                {
+                    BookId = x.BookId,
+                    Bookname = x.BookName,
+                    Price = x.BookPrice,
+                    Quantity = x.Quantity,
+                    Url = x.BookCoverImageUrl
+                });
+            }
         }
+    }
+
+    // Simple data structure to hold order item information
+    public class OrderItemData
+    {
+        public long BookId { get; set; }
+        public string BookName { get; set; }
+        public decimal BookPrice { get; set; }
+        public int Quantity { get; set; }
+        public string BookCoverImageUrl { get; set; }
     }
 
     public class CheckoutFinishedItemViewModel

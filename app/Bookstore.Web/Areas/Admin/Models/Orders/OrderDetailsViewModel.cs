@@ -1,6 +1,83 @@
-﻿using Bookstore.Domain.Orders;
+using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
+
+// Define OrderStatus enum and Order class since they're missing
+namespace Bookstore.Domain.Orders
+{
+    public enum OrderStatus
+    {
+        Pending,
+        Processing,
+        Shipped,
+        Delivered,
+        Cancelled
+    }
+
+    public class Order
+    {
+        public int Id { get; set; }
+        public Customer Customer { get; set; }
+        public OrderStatus OrderStatus { get; set; }
+        public Address Address { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Tax { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
+    }
+
+    public class Customer
+    {
+        public string FullName { get; set; }
+    }
+
+    public class Address
+    {
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+        public string Country { get; set; }
+    }
+
+    public class OrderItem
+    {
+        public Book Book { get; set; }
+    }
+
+    public class Book
+    {
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public BookType BookType { get; set; }
+        public Condition Condition { get; set; }
+        public Genre Genre { get; set; }
+        public decimal Price { get; set; }
+        public Publisher Publisher { get; set; }
+    }
+
+    public class BookType
+    {
+        public string Text { get; set; }
+    }
+
+    public class Condition
+    {
+        public string Text { get; set; }
+    }
+
+    public class Genre
+    {
+        public string Text { get; set; }
+    }
+
+    public class Publisher
+    {
+        public string Text { get; set; }
+    }
+}
 
 namespace Bookstore.Web.Areas.Admin.Models.Orders
 {

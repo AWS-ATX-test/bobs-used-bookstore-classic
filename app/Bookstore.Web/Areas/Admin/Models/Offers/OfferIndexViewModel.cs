@@ -1,16 +1,42 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Bookstore.Domain
+{
+    public enum OfferStatus
+    {
+        Pending,
+        Accepted,
+        Rejected,
+        Completed,
+        Cancelled
+    }
+}
+
+public interface IPaginatedList<T> : IEnumerable<T>
+{
+    int PageIndex { get; }
+    int Count { get; }
+    int TotalPages { get; }
+    bool HasNextPage { get; }
+    bool HasPreviousPage { get; }
+    IEnumerable<int> GetPageList(int pageCount);
+}
+
+
+
 
 namespace Bookstore.Web.Areas.Admin.Models.Offers
 {
     public class OfferIndexViewModel : PaginatedViewModel
     {
-        public OfferIndexViewModel(IPaginatedList<Offer> offers, IEnumerable<ReferenceDataItem> referenceData)
+        public OfferIndexViewModel(IPaginatedList<object> offers, IEnumerable<ReferenceDataItem> referenceData)
         {
             foreach (var offer in offers)
             {
@@ -60,12 +86,21 @@ namespace Bookstore.Web.Areas.Admin.Models.Offers
 
         public string Genre { get; set; }
 
-        public OfferStatus OfferStatus { get; set; }
+        public Bookstore.Domain.Offers.OfferStatus OfferStatus { get; set; }
 
         public DateTime OfferDate { get; internal set; }
 
         public decimal OfferPrice { get; internal set; }
 
         public string Condition { get; internal set; }
+    }
+
+    public class OfferFilters
+    {
+        public string BookName { get; set; }
+        public string Author { get; set; }
+        public int? GenreId { get; set; }
+        public int? ConditionId { get; set; }
+        public Bookstore.Domain.Offers.OfferStatus? Status { get; set; }
     }
 }

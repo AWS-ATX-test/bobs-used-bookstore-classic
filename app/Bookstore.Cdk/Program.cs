@@ -1,5 +1,4 @@
-﻿using Amazon.CDK;
-using Bookstore.Common;
+using Amazon.CDK;
 
 namespace Bookstore.Cdk;
 
@@ -11,10 +10,11 @@ internal sealed class Program
 
         var env = MakeEnv();
 
-        var coreStack = new CoreStack(app, $"{Constants.AppName}Core", new StackProps { Env = env });
-        var networkStack = new NetworkStack(app, $"{Constants.AppName}Network", new StackProps { Env = env });
-        var databaseStack = new DatabaseStack(app, $"{Constants.AppName}Database", new DatabaseStackProps { Env = env, Vpc = networkStack.Vpc });
-        var ecsStack = new EcsStack(app, $"{Constants.AppName}ECS", new EcsStackProps { Env = env, Vpc = networkStack.Vpc, Database = databaseStack.Database, ImageBucket = coreStack.ImageBucket, WebAppUserPool = coreStack.WebAppUserPool });
+        var appName = "Bookstore"; // Replace with actual app name
+        var coreStack = new CoreStack(app, $"{appName}Core", new StackProps { Env = env });
+        var networkStack = new NetworkStack(app, $"{appName}Network", new StackProps { Env = env });
+        var databaseStack = new DatabaseStack(app, $"{appName}Database", new DatabaseStackProps { Env = env, Vpc = networkStack.Vpc });
+        var ecsStack = new EcsStack(app, $"{appName}ECS", new EcsStackProps { Env = env, Vpc = networkStack.Vpc, Database = databaseStack.Database, ImageBucket = coreStack.ImageBucket, WebAppUserPool = coreStack.WebAppUserPool });
 
         app.Synth();
     }

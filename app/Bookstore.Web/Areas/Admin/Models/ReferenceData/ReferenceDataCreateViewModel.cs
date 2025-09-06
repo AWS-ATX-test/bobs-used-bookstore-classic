@@ -1,6 +1,10 @@
-﻿using Bookstore.Domain.ReferenceData;
+using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using System;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+
 
 namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
 {
@@ -17,7 +21,7 @@ namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
 
         public int Id { get; set; }
 
-        public ReferenceDataType SelectedReferenceDataType { get; set; }
+        public int SelectedReferenceDataType { get; set; }  // Changed from ReferenceDataType to int
 
         public string Text { get; set; }
 

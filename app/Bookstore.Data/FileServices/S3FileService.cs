@@ -1,4 +1,4 @@
-﻿using Amazon.S3;
+using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Bookstore.Domain;
@@ -8,6 +8,12 @@ using BobsBookstoreClassic.Data;
 
 namespace Bookstore.Data.FileServices
 {
+    public interface IFileService
+    {
+        Task<string> SaveAsync(Stream contents, string filename);
+        Task DeleteAsync(string filePath);
+    }
+
     public class S3FileService : IFileService
     {
         private readonly TransferUtility transferUtility;

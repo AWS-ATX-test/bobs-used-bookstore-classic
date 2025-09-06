@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Domain
 {
+    public abstract class Entity
+    {
+        public int Id { get; set; }
+    }
+
+    public interface IPaginatedList<T> : IList<T>
+    {
+        int PageIndex { get; }
+        int TotalPages { get; }
+        bool HasPreviousPage { get; }
+        bool HasNextPage { get; }
+        Task PopulateAsync();
+        IEnumerable<int> GetPageList(int count);
+    }
+
     public class PaginatedList<T> : List<T>, IPaginatedList<T> where T : Entity
     {
         private readonly IQueryable<T> source;

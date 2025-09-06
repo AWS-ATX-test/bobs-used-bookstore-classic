@@ -1,8 +1,22 @@
-﻿using System.Threading.Tasks;
-using System.Web.Mvc;
+using System.Threading.Tasks;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using Bookstore.Web.Areas.Admin.Models.Offers;
+using Microsoft.AspNetCore.Mvc;
+
+// Temporary enum definition until the actual one is available
+namespace Bookstore.Domain.Offers
+{
+    public enum OfferStatus
+    {
+        Approved,
+        Rejected,
+        Received,
+        Paid
+    }
+}
+
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
