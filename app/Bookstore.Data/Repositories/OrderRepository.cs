@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.Orders;
 using System;
@@ -6,6 +6,50 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+namespace Bookstore.Domain.Orders
+{
+    public class OrderStatistics
+    {
+        public int PendingOrders { get; set; }
+        public int PastDueOrders { get; set; }
+        public int OrdersThisMonth { get; set; }
+        public int OrdersTotal { get; set; }
+    }
+
+    public class Order
+    {
+        public int Id { get; set; }
+        public Customer Customer { get; set; }
+        public Address Address { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
+        public OrderStatus OrderStatus { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime DeliveryDate { get; set; }
+    }
+
+    public class OrderItem
+    {
+        public int Id { get; set; }
+        public int BookId { get; set; }
+        public Book Book { get; set; }
+    }
+
+    public enum OrderStatus
+    {
+        Pending,
+        Ordered
+    }
+
+    public class Customer
+    {
+        public string Sub { get; set; }
+    }
+
+    public class Address
+    {
+    }
+}
 
 namespace Bookstore.Data.Repositories
 {
@@ -18,12 +62,12 @@ namespace Bookstore.Data.Repositories
             this.dbContext = dbContext;
         }
 
-        async Task IOrderRepository.AddAsync(Order order)
+        public async Task AddAsync(Order order)
         {
             await Task.Run(() => dbContext.Order.Add(order));
         }
 
-        async Task<Order> IOrderRepository.GetAsync(int id)
+        public async Task<Order> GetAsync(int id)
         {
             return await dbContext.Order
                 .Include(x => x.Customer)
@@ -37,12 +81,12 @@ namespace Bookstore.Data.Repositories
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        async Task<Order> IOrderRepository.GetAsync(int id, string sub)
+        public async Task<Order> GetAsync(int id, string sub)
         {
             return await dbContext.Order.SingleOrDefaultAsync(x => x.Id == id && x.Customer.Sub == sub);
         }
 
-        async Task<IEnumerable<Book>> IOrderRepository.ListBestSellingBooksAsync(int count)
+        public async Task<IEnumerable<Book>> ListBestSellingBooksAsync(int count)
         {
             return await dbContext.OrderItem
                 .GroupBy(x => x.BookId)
@@ -52,7 +96,7 @@ namespace Bookstore.Data.Repositories
                 .ToListAsync();
         }
 
-        async Task<OrderStatistics> IOrderRepository.GetStatisticsAsync()
+        public async Task<OrderStatistics> GetStatisticsAsync()
         {
             var startOfMonth = DateTime.UtcNow.StartOfMonth();
 
@@ -67,7 +111,7 @@ namespace Bookstore.Data.Repositories
                 }).SingleOrDefaultAsync();
         }
 
-        async Task<IPaginatedList<Order>> IOrderRepository.ListAsync(OrderFilters filters, int pageIndex, int pageSize)
+        public async Task<IPaginatedList<Order>> ListAsync(OrderFilters filters, int pageIndex, int pageSize)
         {
             var query = dbContext.Order.AsQueryable();
 
@@ -99,7 +143,7 @@ namespace Bookstore.Data.Repositories
             return result;
         }
 
-        async Task<IEnumerable<Order>> IOrderRepository.ListAsync(string sub)
+        public async Task<IEnumerable<Order>> ListAsync(string sub)
         {
             return await dbContext.Order
                 .Include(x => x.OrderItems)
@@ -108,7 +152,7 @@ namespace Bookstore.Data.Repositories
                 .ToListAsync();
         }
 
-        async Task IOrderRepository.SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
             await dbContext.SaveChangesAsync();
         }

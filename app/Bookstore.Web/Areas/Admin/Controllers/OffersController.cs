@@ -1,8 +1,51 @@
-﻿using System.Threading.Tasks;
-using System.Web.Mvc;
+using System.Threading.Tasks;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using Bookstore.Web.Areas.Admin.Models.Offers;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Bookstore.Domain.ReferenceData
+{
+    public interface IReferenceDataService
+    {
+        Task<object> GetAllReferenceDataAsync();
+    }
+}
+
+namespace Bookstore.Domain.Offers
+{
+    public class OfferFilters
+    {
+        // Required properties based on usage in the controller
+    }
+
+    public enum OfferStatus
+    {
+        Approved,
+        Rejected,
+        Received,
+        Paid
+    }
+
+    public class UpdateOfferStatusDto
+    {
+        public int Id { get; }
+        public OfferStatus Status { get; }
+
+        public UpdateOfferStatusDto(int id, OfferStatus status)
+        {
+            Id = id;
+            Status = status;
+        }
+    }
+
+    public interface IOfferService
+    {
+        Task<object> GetOffersAsync(OfferFilters filters, int pageIndex, int pageSize);
+        Task UpdateOfferStatusAsync(UpdateOfferStatusDto dto);
+    }
+}
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {

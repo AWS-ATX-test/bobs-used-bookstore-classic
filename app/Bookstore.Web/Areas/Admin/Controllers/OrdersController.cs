@@ -1,7 +1,23 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Orders;
 using Bookstore.Domain.Orders;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Bookstore.Domain.Orders
+{
+    public class UpdateOrderStatusDto
+    {
+        public int OrderId { get; }
+        public int OrderStatus { get; }
+
+        public UpdateOrderStatusDto(int orderId, int orderStatus)
+        {
+            OrderId = orderId;
+            OrderStatus = orderStatus;
+        }
+    }
+}
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
@@ -14,8 +30,9 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             this.orderService = orderService;
         }
 
-        public async Task<ActionResult> Index(OrderFilters filters, int pageIndex = 1, int pageSize = 10)
+        public async Task<ActionResult> Index(int? orderId = null, string customerName = null, int? orderStatus = null, int pageIndex = 1, int pageSize = 10)
         {
+            var filters = new { OrderId = orderId, CustomerName = customerName, OrderStatus = orderStatus };
             var orders = await orderService.GetOrdersAsync(filters, pageIndex, pageSize);
 
             return View(new OrderIndexViewModel(orders, filters));

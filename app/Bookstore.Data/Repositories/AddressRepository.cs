@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Addresses;
+using Bookstore.Domain.Addresses;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Data.Repositories
 {
-    public class AddressRepository : IAddressRepository
+public class AddressRepository : Bookstore.Domain.Addresses.IAddressRepository
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -15,7 +15,7 @@ namespace Bookstore.Data.Repositories
             this.dbContext = dbContext;
         }
 
-        async Task IAddressRepository.DeleteAsync(string sub, int id)
+        public async Task DeleteAsync(string sub, int id)
         {
             var address = await dbContext.Address.SingleOrDefaultAsync(x => x.Customer.Sub == sub && x.Id == id);
 
@@ -24,17 +24,17 @@ namespace Bookstore.Data.Repositories
             address.IsActive = false;
         }
 
-        async Task<Address> IAddressRepository.GetAsync(string sub, int id)
+        public async Task<Address> GetAsync(string sub, int id)
         {
             return await dbContext.Address.SingleOrDefaultAsync(x => x.Customer.Sub == sub && x.Id == id && x.IsActive == true);
         }
 
-        async Task<IEnumerable<Address>> IAddressRepository.ListAsync(string sub)
+        public async Task<IEnumerable<Address>> ListAsync(string sub)
         {
             return await dbContext.Address.Where(x => x.Customer.Sub == sub && x.IsActive == true).ToListAsync();
         }
 
-        async Task IAddressRepository.AddAsync(Address address)
+        public async Task AddAsync(Address address)
         {
             await Task.Run(() => dbContext.Address.Add(address));
         }

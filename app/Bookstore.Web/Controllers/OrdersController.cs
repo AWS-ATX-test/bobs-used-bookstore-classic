@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Orders;
 using Bookstore.Web.ViewModel.Orders;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Bookstore.Web.Controllers
 {
@@ -32,9 +33,8 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(int id)
         {
-            var dto = new CancelOrderDto(User.GetSub(), id);
-
-            await orderService.CancelOrderAsync(dto);
+// Create parameters directly rather than using CancelOrderDto if it can't be found
+            await orderService.CancelOrderAsync(User.GetSub(), id);
 
             return RedirectToAction("Index");
         }

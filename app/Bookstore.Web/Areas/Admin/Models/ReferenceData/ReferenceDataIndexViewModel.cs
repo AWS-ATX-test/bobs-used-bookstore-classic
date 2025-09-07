@@ -1,10 +1,14 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
 {
+    public class ReferenceDataFilters
+    {
+        // Add properties as needed
+    }
     public class ReferenceDataIndexViewModel : PaginatedViewModel
     {
         public List<ReferenceDataIndexListItemViewModel> Items { get; set; } = new List<ReferenceDataIndexListItemViewModel>();
@@ -26,7 +30,7 @@ namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
             Filters = filters;
 
             PageIndex = referenceDataItems.PageIndex;
-            PageSize = referenceDataItems.Count;
+            PageSize = referenceDataItems.Count();
             PageCount = referenceDataItems.TotalPages;
             HasNextPage = referenceDataItems.HasNextPage;
             HasPreviousPage = referenceDataItems.HasPreviousPage;

@@ -1,6 +1,6 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Offers;
+using Bookstore.Domain;
 using System.Collections.Generic;
+using Offer = Bookstore.Domain.Offers.Offer;
 
 namespace Bookstore.Web.ViewModel.Resale
 {

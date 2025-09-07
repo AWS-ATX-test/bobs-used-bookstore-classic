@@ -1,9 +1,13 @@
-﻿using Bookstore.Domain.Carts;
+using Bookstore.Domain.Carts;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Bookstore.Web.ViewModel.ShoppingCart
 {
+    public enum ShoppingCartItemFilter
+    {
+        IncludeOutOfStockItems
+    }
     public class ShoppingCartIndexViewModel
     {
         public decimal TotalPrice => ShoppingCartItems.Sum(x => x.Price);

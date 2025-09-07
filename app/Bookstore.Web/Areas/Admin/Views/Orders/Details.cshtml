@@ -40,7 +40,9 @@
                             <div class="d-flex">
                                 @Html.HiddenFor(m => m.OrderId)
                                 <input type="hidden" asp-for="@Model.OrderId" />
-                                @Html.EnumDropDownListFor(a => a.SelectedOrderStatus, new { @class = "form-select m-auto" } )                        
+                                @Html.DropDownListFor(a => a.SelectedOrderStatus,
+                                    new SelectList(Enum.GetValues(Model.SelectedOrderStatus.GetType()), Model.SelectedOrderStatus),
+                                    null, new { @class = "form-select m-auto" })
                                 <button type="submit" class="btn btn-primary ms-2">Update</button>
                             </div>
                         </form>

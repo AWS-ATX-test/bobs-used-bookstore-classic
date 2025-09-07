@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
 using System;
 using System.Collections;
@@ -7,8 +7,79 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
+namespace Bookstore.Domain.Books
+{
+    public class Book
+    {
+        public static readonly int LowBookThreshold = 5;
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public string ISBN { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string CoverImageUrl { get; set; }
+        public int GenreId { get; set; }
+        public int PublisherId { get; set; }
+        public int BookTypeId { get; set; }
+        public int ConditionId { get; set; }
+
+        public virtual Genre Genre { get; set; }
+        public virtual Publisher Publisher { get; set; }
+        public virtual BookType BookType { get; set; }
+        public virtual Condition Condition { get; set; }
+    }
+
+    public class Genre
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class Publisher
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class BookType
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class Condition
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class BookFilters
+    {
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public int? ConditionId { get; set; }
+        public int? BookTypeId { get; set; }
+        public int? GenreId { get; set; }
+        public int? PublisherId { get; set; }
+        public bool LowStock { get; set; }
+    }
+}
+
 namespace Bookstore.Data.Repositories
 {
+    public interface IBookRepository
+    {
+        Task<Book> GetAsync(int id);
+        Task<IPaginatedList<Book>> ListAsync(BookFilters filters, int pageIndex, int pageSize);
+        Task<IPaginatedList<Book>> ListAsync(string searchString, string sortBy, int pageIndex, int pageSize);
+        Task AddAsync(Book book);
+        Task UpdateAsync(Book book);
+        Task SaveChangesAsync();
+        Task<BookStatistics> GetStatisticsAsync();
+    }
+
     public class BookRepository : IBookRepository
     {
         private readonly ApplicationDbContext dbContext;
@@ -151,6 +222,31 @@ namespace Bookstore.Data.Repositories
                     OutOfStock = x.Count(y => y.Quantity == 0),
                     StockTotal = x.Count()
                 }).SingleOrDefaultAsync();
+        }
+    }
+
+    public class BookStatistics
+    {
+        public int LowStock { get; set; }
+        public int OutOfStock { get; set; }
+        public int StockTotal { get; set; }
+    }
+
+    public interface IPaginatedList<T>
+    {
+        Task PopulateAsync();
+    }
+
+    public class PaginatedList<T> : IPaginatedList<T>
+    {
+        public PaginatedList(IQueryable<T> query, int pageIndex, int pageSize)
+        {
+            // Implementation would be here
+        }
+
+        public Task PopulateAsync()
+        {
+            return Task.CompletedTask; // Placeholder implementation
         }
     }
 }

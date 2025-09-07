@@ -1,7 +1,25 @@
-﻿using Bookstore.Domain.Carts;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Linq;
+
+namespace Bookstore.Domain.Carts
+{
+    public class ShoppingCart
+    {
+        public string CorrelationId { get; set; }
+        public ICollection<ShoppingCartItem> ShoppingCartItems { get; set; }
+    }
+
+    public class ShoppingCartItem
+    {
+        public Book Book { get; set; }
+    }
+
+    public class Book
+    {
+    }
+}
 
 namespace Bookstore.Data.Repositories
 {
@@ -14,12 +32,12 @@ namespace Bookstore.Data.Repositories
             this.dbContext = dbContext;
         }
 
-        async Task IShoppingCartRepository.AddAsync(ShoppingCart shoppingCart)
+        public async Task AddAsync(ShoppingCart shoppingCart)
         {
             await Task.Run(() => dbContext.ShoppingCart.Add(shoppingCart));
         }
 
-        async Task<ShoppingCart> IShoppingCartRepository.GetAsync(string correlationId)
+        public async Task<ShoppingCart> GetAsync(string correlationId)
         {
             return await dbContext.ShoppingCart
                 .Include(x => x.ShoppingCartItems)
@@ -27,7 +45,7 @@ namespace Bookstore.Data.Repositories
                 .SingleOrDefaultAsync(x => x.CorrelationId == correlationId);
         }
 
-        async Task IShoppingCartRepository.SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
             await dbContext.SaveChangesAsync();
         }

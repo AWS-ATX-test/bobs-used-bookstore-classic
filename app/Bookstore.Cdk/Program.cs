@@ -1,5 +1,6 @@
-﻿using Amazon.CDK;
-using Bookstore.Common;
+using Amazon.CDK;
+// Temporarily commenting out the missing reference until the project reference is added
+// using Bookstore.Common;
 
 namespace Bookstore.Cdk;
 

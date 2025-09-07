@@ -1,14 +1,28 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Books;
+using Bookstore.Domain;
 using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
+// ReferenceDataItem definition
+namespace Bookstore.Domain.ReferenceData
+{
+    public class ReferenceDataItem
+    {
+        public int Id { get; set; }
+        public int DataType { get; set; }
+    }
+
+    public class ReferenceDataFilters
+    {
+        public int? ReferenceDataType { get; set; }
+    }
+}
+
 namespace Bookstore.Data.Repositories
 {
-    public class ReferenceDataRepository : IReferenceDataRepository
+public class ReferenceDataRepository
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -17,22 +31,22 @@ namespace Bookstore.Data.Repositories
             this.dbContext = dbContext;
         }
 
-        async Task IReferenceDataRepository.AddAsync(ReferenceDataItem item)
+        public async Task AddAsync(ReferenceDataItem item)
         {
             await Task.Run(() => dbContext.ReferenceData.Add(item));
         }
 
-        async Task<ReferenceDataItem> IReferenceDataRepository.GetAsync(int id)
+        public async Task<ReferenceDataItem> GetAsync(int id)
         {
             return await dbContext.ReferenceData.FindAsync(id);
         }
 
-        async Task<IEnumerable<ReferenceDataItem>> IReferenceDataRepository.FullListAsync()
+        public async Task<IEnumerable<ReferenceDataItem>> FullListAsync()
         {
             return await dbContext.ReferenceData.ToListAsync();
         }
 
-        async Task<IPaginatedList<ReferenceDataItem>> IReferenceDataRepository.ListAsync(ReferenceDataFilters filters, int pageIndex, int pageSize)
+        public async Task<IPaginatedList<ReferenceDataItem>> ListAsync(ReferenceDataFilters filters, int pageIndex, int pageSize)
         {
             var query = dbContext.ReferenceData.AsQueryable();
 
@@ -48,7 +62,7 @@ namespace Bookstore.Data.Repositories
             return result;
         }
 
-        async Task IReferenceDataRepository.SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
             await dbContext.SaveChangesAsync();
         }

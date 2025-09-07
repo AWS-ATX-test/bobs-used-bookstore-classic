@@ -1,10 +1,12 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace Bookstore.Web.Areas.Admin.Models.Offers
 {
@@ -29,14 +31,14 @@ namespace Bookstore.Web.Areas.Admin.Models.Offers
             }
 
             PageIndex = offers.PageIndex;
-            PageSize = offers.Count;
+            PageSize = offers.Count();
             PageCount = offers.TotalPages;
             HasNextPage = offers.HasNextPage;
             HasPreviousPage = offers.HasPreviousPage;
             PaginationButtons = offers.GetPageList(5).ToList();
 
-            Genres = referenceData.Where(x => x.DataType == ReferenceDataType.Genre).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            BookConditions = referenceData.Where(x => x.DataType == ReferenceDataType.Condition).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
+            Genres = referenceData.Where(x => x.DataType == (int)1).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
+            BookConditions = referenceData.Where(x => x.DataType == (int)2).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
         }
 
         public List<OfferIndexItemViewModel> Items { get; set; } = new List<OfferIndexItemViewModel>();

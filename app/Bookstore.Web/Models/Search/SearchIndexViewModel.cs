@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Bookstore.Domain.Books;
-using Bookstore.Domain;
 using System.Linq;
 
 namespace Bookstore.Web.ViewModel.Search
@@ -15,7 +13,7 @@ namespace Bookstore.Web.ViewModel.Search
 
         public List<SearchIndexItemViewModel> Books { get; set; } = new List<SearchIndexItemViewModel>();
 
-        public SearchIndexViewModel(IPaginatedList<Book> books)
+        public SearchIndexViewModel(dynamic books)
         {
             foreach (var book in books)
             {

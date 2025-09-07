@@ -1,9 +1,11 @@
-﻿using System;
-using Microsoft.Owin;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using Bookstore.Domain.Customers;
+using Microsoft.AspNetCore.Owin;
+using Microsoft.Owin;
+
 
 namespace Bookstore.Web.Helpers
 {
@@ -13,12 +15,12 @@ namespace Bookstore.Web.Helpers
 
         private readonly ICustomerService _customerService;
 
-        public LocalAuthenticationMiddleware(OwinMiddleware next, ICustomerService customerService) : base(next)
+    public LocalAuthenticationMiddleware(Microsoft.Owin.OwinMiddleware next, ICustomerService customerService) : base(next)
         {
             _customerService = customerService;
         }
 
-        public override async Task Invoke(IOwinContext context)
+    public override async Task Invoke(Microsoft.Owin.IOwinContext context)
         {
             if (context.Request.Path.Value.StartsWith("/Authentication/Login"))
             {
@@ -63,11 +65,14 @@ namespace Bookstore.Web.Helpers
         {
             var identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 
-            var dto = new CreateOrUpdateCustomerDto(
-                identity.FindFirst("nameidentifier").Value,
-                identity.Name,
-                identity.FindFirst("given_name").Value,
-                identity.FindFirst("family_name").Value);
+// Create a simple object instead of using CreateOrUpdateCustomerDto class
+            var dto = new
+            {
+                Id = identity.FindFirst("nameidentifier").Value,
+                Name = identity.Name,
+                FirstName = identity.FindFirst("given_name").Value,
+                LastName = identity.FindFirst("family_name").Value
+            };
 
             await _customerService.CreateOrUpdateCustomerAsync(dto);
         }

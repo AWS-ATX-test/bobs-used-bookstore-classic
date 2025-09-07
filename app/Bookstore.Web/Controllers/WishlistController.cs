@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Customers;
 using Bookstore.Domain.Carts;
 using Bookstore.Web.ViewModel.Wishlist;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+
 
 namespace Bookstore.Web.Controllers
 {
-    [AllowAnonymous]
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public class WishlistController : Controller
     {
         private readonly ICustomerService customerService;
@@ -21,7 +23,7 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(HttpContext.GetShoppingCartCorrelationId());
+            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(HttpContext.Request.Cookies["ShoppingCartCorrelationId"]);
 
             return View(new WishlistIndexViewModel(shoppingCart));
         }
@@ -29,9 +31,9 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> MoveToShoppingCart(int shoppingCartItemId)
         {
-            var dto = new MoveWishlistItemToShoppingCartDto(HttpContext.GetShoppingCartCorrelationId(), shoppingCartItemId);
+            var correlationId = HttpContext.Request.Cookies["ShoppingCartCorrelationId"];
 
-            await shoppingCartService.MoveWishlistItemToShoppingCartAsync(dto);
+            await shoppingCartService.MoveWishlistItemToShoppingCartAsync(correlationId, shoppingCartItemId);
 
             this.SetNotification("Item moved to shopping cart");
 
@@ -41,9 +43,9 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> MoveAllItemsToShoppingCart()
         {
-            var dto = new MoveAllWishlistItemsToShoppingCartDto(HttpContext.GetShoppingCartCorrelationId());
+            var correlationId = HttpContext.Request.Cookies["ShoppingCartCorrelationId"];
 
-            await shoppingCartService.MoveAllWishlistItemsToShoppingCartAsync(dto);
+            await shoppingCartService.MoveAllWishlistItemsToShoppingCartAsync(correlationId);
 
             this.SetNotification("All items moved to shopping cart");
 
@@ -53,9 +55,9 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(int shoppingCartItemId)
         {
-            var dto = new DeleteShoppingCartItemDto(HttpContext.GetShoppingCartCorrelationId(), shoppingCartItemId);
+            var correlationId = HttpContext.Request.Cookies["ShoppingCartCorrelationId"];
 
-            await shoppingCartService.DeleteShoppingCartItemAsync(dto);
+            await shoppingCartService.DeleteShoppingCartItemAsync(correlationId, shoppingCartItemId);
 
             this.SetNotification("Item removed from wishlist");
 

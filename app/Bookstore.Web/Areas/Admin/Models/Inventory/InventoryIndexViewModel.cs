@@ -1,10 +1,24 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+// Adding local enum definition to replace the missing ReferenceDataType
+namespace Bookstore.Domain.ReferenceData
+{
+    public enum ReferenceDataType
+    {
+        Condition,
+        BookType,
+        Genre,
+        Publisher
+    }
+}
+
 
 namespace Bookstore.Web.Areas.Admin.Models.Inventory
 {
@@ -13,7 +27,8 @@ namespace Bookstore.Web.Areas.Admin.Models.Inventory
 
         public List<InventoryIndexListItemViewModel> Items { get; set; } = new List<InventoryIndexListItemViewModel>();
 
-        public BookFilters Filters { get; set; } = new BookFilters();
+        // Using a basic filters dictionary instead of BookFilters type
+        public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 
         public IEnumerable<SelectListItem> Publishers { get; set; } = new List<SelectListItem>();
 
@@ -46,7 +61,7 @@ namespace Bookstore.Web.Areas.Admin.Models.Inventory
             }
 
             PageIndex = books.PageIndex;
-            PageSize = books.Count;
+            PageSize = books.Count();
             PageCount = books.TotalPages;
             HasNextPage = books.HasNextPage;
             HasPreviousPage = books.HasPreviousPage;

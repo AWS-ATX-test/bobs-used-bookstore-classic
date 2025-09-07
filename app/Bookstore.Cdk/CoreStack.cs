@@ -6,10 +6,14 @@ using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.SSM;
 using Amazon.CDK.CustomResources;
-using Bookstore.Common;
 using Constructs;
 
 namespace Bookstore.Cdk;
+
+public static class Constants
+{
+    public const string AppName = "Bookstore";
+}
 
 public class CoreStack : Stack
 {

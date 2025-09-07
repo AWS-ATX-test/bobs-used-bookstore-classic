@@ -1,8 +1,102 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Inventory;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Bookstore.Domain.Books
+{
+    public interface IBookService
+    {
+        Task<dynamic> GetBooksAsync(dynamic filters, int pageIndex, int pageSize);
+        Task<dynamic> GetBookAsync(int id);
+        Task<dynamic> AddAsync(CreateBookDto dto);
+        Task<dynamic> UpdateAsync(UpdateBookDto dto);
+    }
+
+    public class CreateBookDto
+    {
+        public CreateBookDto(string name, string author, int bookTypeId, int conditionId, int genreId, int publisherId,
+            int year, string isbn, string summary, decimal price, int quantity, Stream coverImageStream, string coverImageFilename)
+        {
+            Name = name;
+            Author = author;
+            BookTypeId = bookTypeId;
+            ConditionId = conditionId;
+            GenreId = genreId;
+            PublisherId = publisherId;
+            Year = year;
+            ISBN = isbn;
+            Summary = summary;
+            Price = price;
+            Quantity = quantity;
+            CoverImageStream = coverImageStream;
+            CoverImageFilename = coverImageFilename;
+        }
+
+        public string Name { get; }
+        public string Author { get; }
+        public int BookTypeId { get; }
+        public int ConditionId { get; }
+        public int GenreId { get; }
+        public int PublisherId { get; }
+        public int Year { get; }
+        public string ISBN { get; }
+        public string Summary { get; }
+        public decimal Price { get; }
+        public int Quantity { get; }
+        public Stream CoverImageStream { get; }
+        public string CoverImageFilename { get; }
+    }
+
+    public class UpdateBookDto
+    {
+        public UpdateBookDto(int id, string name, string author, int bookTypeId, int conditionId, int genreId, int publisherId,
+            int year, string isbn, string summary, decimal price, int quantity, Stream coverImageStream, string coverImageFilename)
+        {
+            Id = id;
+            Name = name;
+            Author = author;
+            BookTypeId = bookTypeId;
+            ConditionId = conditionId;
+            GenreId = genreId;
+            PublisherId = publisherId;
+            Year = year;
+            ISBN = isbn;
+            Summary = summary;
+            Price = price;
+            Quantity = quantity;
+            CoverImageStream = coverImageStream;
+            CoverImageFilename = coverImageFilename;
+        }
+
+        public int Id { get; }
+        public string Name { get; }
+        public string Author { get; }
+        public int BookTypeId { get; }
+        public int ConditionId { get; }
+        public int GenreId { get; }
+        public int PublisherId { get; }
+        public int Year { get; }
+        public string ISBN { get; }
+        public string Summary { get; }
+        public decimal Price { get; }
+        public int Quantity { get; }
+        public Stream CoverImageStream { get; }
+        public string CoverImageFilename { get; }
+    }
+}
+
+namespace Bookstore.Domain.ReferenceData
+{
+    public interface IReferenceDataService
+    {
+        Task<dynamic> GetAllReferenceDataAsync();
+    }
+}
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
@@ -17,9 +111,9 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             this.referenceDataService = referenceDataService;
         }
 
-        public async Task<ActionResult> Index(BookFilters filters, int pageIndex = 1, int pageSize = 10)
+        public async Task<ActionResult> Index(object filters, int pageIndex = 1, int pageSize = 10)
         {
-            var books = await bookService.GetBooksAsync(filters, pageIndex, pageSize);
+            var books = await bookService.GetBooksAsync(filters as dynamic, pageIndex, pageSize);
             var referenceDataItems = await referenceDataService.GetAllReferenceDataAsync();
 
             return View(new InventoryIndexViewModel(books, referenceDataItems));
@@ -45,18 +139,18 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid) return await InvalidCreateUpdateView(model);
 
             var dto = new CreateBookDto(
-                model.Name, 
-                model.Author, 
-                model.SelectedBookTypeId, 
-                model.SelectedConditionId, 
-                model.SelectedGenreId, 
-                model.SelectedPublisherId, 
-                model.Year, 
-                model.ISBN, 
-                model.Summary, 
-                model.Price, 
-                model.Quantity, 
-                model.CoverImage?.InputStream, 
+                model.Name,
+                model.Author,
+                model.SelectedBookTypeId,
+                model.SelectedConditionId,
+                model.SelectedGenreId,
+                model.SelectedPublisherId,
+                model.Year,
+                model.ISBN,
+                model.Summary,
+                model.Price,
+                model.Quantity,
+                model.CoverImage?.InputStream,
                 model.CoverImage?.FileName);
 
             var result = await bookService.AddAsync(dto);
@@ -98,9 +192,11 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             return await ProcessBookResultAsync(model, result, $"{model.Name} has been updated");
         }
 
-        private async Task<ActionResult> ProcessBookResultAsync(InventoryCreateUpdateViewModel model, BookResult result, string successMessage)
+        private async Task<ActionResult> ProcessBookResultAsync<T>(InventoryCreateUpdateViewModel model, T result, string successMessage) where T : class
         {
-            if (result.IsSuccess)
+            // Assuming the result has IsSuccess and ErrorMessage properties through dynamic access
+            dynamic dynamicResult = result;
+            if (dynamicResult.IsSuccess)
             {
                 TempData["Message"] = successMessage;
 
@@ -108,7 +204,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             }
             else
             {
-                ModelState.AddModelError(nameof(model.CoverImage), result.ErrorMessage);
+                ModelState.AddModelError(nameof(model.CoverImage), dynamicResult.ErrorMessage);
 
                 return await InvalidCreateUpdateView(model);
             }

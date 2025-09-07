@@ -1,15 +1,114 @@
-﻿using Amazon.Auth.AccessControlPolicy;
+using Amazon.Auth.AccessControlPolicy;
 using Bookstore.Domain;
 using Bookstore.Domain.Offers;
-using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
+namespace Bookstore.Data
+{
+    public static class DateTimeExtensions
+    {
+        public static DateTime StartOfMonth(this DateTime date)
+        {
+            return new DateTime(date.Year, date.Month, 1);
+        }
+    }
+}
+
+namespace Bookstore.Domain.Offers
+{
+    public class OfferStatistics
+    {
+        public int PendingOffers { get; set; }
+        public int OffersThisMonth { get; set; }
+        public int OffersTotal { get; set; }
+    }
+
+    public class Offer
+    {
+        public int Id { get; set; }
+        public string BookName { get; set; }
+        public string Author { get; set; }
+        public int? ConditionId { get; set; }
+        public Condition Condition { get; set; }
+        public int? GenreId { get; set; }
+        public Genre Genre { get; set; }
+        public OfferStatus OfferStatus { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public Customer Customer { get; set; }
+        public BookType BookType { get; set; }
+        public Publisher Publisher { get; set; }
+    }
+
+    public enum OfferStatus
+    {
+        PendingApproval,
+        Approved,
+        Rejected
+    }
+
+    public class Customer
+    {
+        public string Sub { get; set; }
+    }
+
+    public class Genre
+    {
+    }
+
+    public class Condition
+    {
+    }
+
+    public class BookType
+    {
+    }
+
+    public class Publisher
+    {
+    }
+}
+
 namespace Bookstore.Data.Repositories
 {
+    public interface IOfferRepository
+    {
+        Task AddAsync(Offer offer);
+        Task<Offer> GetAsync(int id);
+        Task<IPaginatedList<Offer>> ListAsync(OfferFilters filters, int pageIndex, int pageSize);
+        Task<IEnumerable<Offer>> ListAsync(string sub);
+        Task SaveChangesAsync();
+        Task<OfferStatistics> GetStatisticsAsync();
+    }
+
+    public class OfferFilters
+    {
+        public string Author { get; set; }
+        public string BookName { get; set; }
+        public int? ConditionId { get; set; }
+        public int? GenreId { get; set; }
+        public OfferStatus? OfferStatus { get; set; }
+    }
+
+    public interface IPaginatedList<T>
+    {
+    }
+
+    public class PaginatedList<T> : IPaginatedList<T>
+    {
+        public PaginatedList(IQueryable<T> query, int pageIndex, int pageSize)
+        {
+        }
+
+        public Task PopulateAsync()
+        {
+            return Task.CompletedTask;
+        }
+    }
+
     public class OfferRepository : IOfferRepository
     {
         private readonly ApplicationDbContext dbContext;
@@ -75,8 +174,8 @@ namespace Bookstore.Data.Repositories
             query = query.Include(x => x.Customer)
                 .Include(x => x.Condition)
                 .Include(x => x.Genre);
-         
-                
+
+
 
             var result = new PaginatedList<Offer>(query, pageIndex, pageSize);
 
