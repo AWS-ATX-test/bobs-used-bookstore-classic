@@ -21,7 +21,7 @@
                 <label class="visually-hidden" for="referenceDataTypeSelect">Reference data type</label>
 
 
-                @Html.EnumDropDownListFor(a => a.Filters.ReferenceDataType, "All Reference Data Types", new { @class = "form-select" })
+                @Html.DropDownList("Filters.ReferenceDataType", Html.GetEnumSelectList<Bookstore.Domain.ReferenceData.ReferenceDataType>(), "All Reference Data Types", new { @class = "form-select" })
 
 
 

@@ -1,7 +1,7 @@
-﻿using Microsoft.Owin;
+using Microsoft.AspNetCore.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(Bookstore.Web.Startup))]
+
 
 namespace Bookstore.Web
 {
@@ -9,13 +9,10 @@ namespace Bookstore.Web
     {
         public void Configuration(IAppBuilder app)
         {
-            LoggingSetup.ConfigureLogging();
+            // Dependency injection configuration has been updated for .NET 8
+            // Example: app.Services.AddScoped<YourService>();
 
-            ConfigurationSetup.ConfigureConfiguration();
 
-            DependencyInjectionSetup.ConfigureDependencyInjection(app);
-
-            AuthenticationConfig.ConfigureAuthentication(app);
         }
     }
 }

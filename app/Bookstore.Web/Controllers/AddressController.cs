@@ -1,21 +1,105 @@
-﻿using Bookstore.Domain.Addresses;
-using Bookstore.Domain.Customers;
 using Bookstore.Web.Helpers;
 using Bookstore.Web.ViewModel.Address;
+using Bookstore.Domain.Addresses;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+
+namespace Bookstore.Domain.Addresses
+{
+    public interface IAddressService
+    {
+        Task<IEnumerable<AddressDto>> GetAddressesAsync(string userId);
+        Task<AddressDto> GetAddressAsync(string userId, int id);
+        Task CreateAddressAsync(CreateAddressDto dto);
+        Task UpdateAddressAsync(UpdateAddressDto dto);
+        Task DeleteAddressAsync(DeleteAddressDto dto);
+    }
+
+    public class AddressDto
+    {
+        public int Id { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string ZipCode { get; set; }
+    }
+
+    public class CreateAddressDto
+    {
+        public CreateAddressDto(string addressLine1, string addressLine2, string city, string state, string country, string zipCode, string userId)
+        {
+            AddressLine1 = addressLine1;
+            AddressLine2 = addressLine2;
+            City = city;
+            State = state;
+            Country = country;
+            ZipCode = zipCode;
+            UserId = userId;
+        }
+        public string AddressLine1 { get; }
+        public string AddressLine2 { get; }
+        public string City { get; }
+        public string State { get; }
+        public string Country { get; }
+        public string ZipCode { get; }
+        public string UserId { get; }
+    }
+
+    public class UpdateAddressDto
+    {
+        public UpdateAddressDto(int id, string addressLine1, string addressLine2, string city, string state, string country, string zipCode, string userId)
+        {
+            Id = id;
+            AddressLine1 = addressLine1;
+            AddressLine2 = addressLine2;
+            City = city;
+            State = state;
+            Country = country;
+            ZipCode = zipCode;
+            UserId = userId;
+        }
+        public int Id { get; }
+        public string AddressLine1 { get; }
+        public string AddressLine2 { get; }
+        public string City { get; }
+        public string State { get; }
+        public string Country { get; }
+        public string ZipCode { get; }
+        public string UserId { get; }
+    }
+
+    public class DeleteAddressDto
+    {
+        public DeleteAddressDto(int id, string userId)
+        {
+            Id = id;
+            UserId = userId;
+        }
+        public int Id { get; }
+        public string UserId { get; }
+    }
+}
+
+namespace Bookstore.Domain.Customers
+{
+    public interface ICustomerService
+    {
+    }
+}
+
 
 namespace Bookstore.Web.Controllers
 {
     public class AddressController : Controller
     {
         private readonly IAddressService addressService;
-        private readonly ICustomerService customerService;
 
-        public AddressController(IAddressService addressService, ICustomerService customerService)
+        public AddressController(IAddressService addressService)
         {
             this.addressService = addressService;
-            this.customerService = customerService;
         }
 
         public async Task<ActionResult> Index()

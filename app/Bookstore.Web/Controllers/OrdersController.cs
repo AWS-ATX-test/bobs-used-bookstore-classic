@@ -1,11 +1,19 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
-using Bookstore.Domain.Orders;
 using Bookstore.Web.ViewModel.Orders;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+
 
 namespace Bookstore.Web.Controllers
 {
+    public interface IOrderService
+    {
+        Task<IEnumerable<object>> GetOrdersAsync(string userId);
+        Task<object> GetOrderAsync(int id);
+        Task CancelOrderAsync(object dto);
+    }
+
     public class OrdersController : Controller
     {
         private readonly IOrderService orderService;
@@ -32,7 +40,7 @@ namespace Bookstore.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(int id)
         {
-            var dto = new CancelOrderDto(User.GetSub(), id);
+            var dto = new { UserId = User.GetSub(), OrderId = id };
 
             await orderService.CancelOrderAsync(dto);
 

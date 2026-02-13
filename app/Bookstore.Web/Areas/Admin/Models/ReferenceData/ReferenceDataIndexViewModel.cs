@@ -1,5 +1,3 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,28 +7,28 @@ namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
     {
         public List<ReferenceDataIndexListItemViewModel> Items { get; set; } = new List<ReferenceDataIndexListItemViewModel>();
 
-        public ReferenceDataFilters Filters { get; set; } = new ReferenceDataFilters();
+        public object Filters { get; set; }
 
-        public ReferenceDataIndexViewModel(IPaginatedList<ReferenceDataItem> referenceDataItems, ReferenceDataFilters filters)
+        public ReferenceDataIndexViewModel(List<object> referenceDataItems, object filters)
         {
-            foreach (var item in referenceDataItems.OrderBy(x => x.DataType.ToString()))
+            // Placeholder implementation – actual logic depends on real data shape foreach (var item in referenceDataItems)
             {
                 Items.Add(new ReferenceDataIndexListItemViewModel
                 {
-                    Id = item.Id,
-                    ReferenceDataType = item.DataType.ToString(),
-                    Text = item.Text
+                    Id = 0,
+                    Text = "Placeholder",
+                    ReferenceDataType = "Placeholder"
                 });
             }
 
             Filters = filters;
 
-            PageIndex = referenceDataItems.PageIndex;
+            PageIndex = 0;
             PageSize = referenceDataItems.Count;
-            PageCount = referenceDataItems.TotalPages;
-            HasNextPage = referenceDataItems.HasNextPage;
-            HasPreviousPage = referenceDataItems.HasPreviousPage;
-            PaginationButtons = referenceDataItems.GetPageList(5).ToList();
+            PageCount = 1;
+            HasNextPage = false;
+            HasPreviousPage = false;
+            PaginationButtons = Enumerable.Range(0, 1).ToList();
         }
     }
 

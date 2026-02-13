@@ -1,17 +1,40 @@
-﻿using System.Threading.Tasks;
-using System.Web.Mvc;
-using Bookstore.Domain.Offers;
-using Bookstore.Domain.ReferenceData;
-using Bookstore.Web.Areas.Admin.Models.Offers;
+using System.Threading.Tasks;
+using Bookstore.Web.Areas.Admin.Controllers;
+using Bookstore.Web.Areas.Admin.Controllers;
+using Bookstore.Web.Areas.Admin.Models;
+using Microsoft.AspNetCore.Mvc;
+
+public enum OfferStatus
+{
+    Approved,
+    Rejected,
+    Received,
+    Paid
+}
+
+public class OfferFilters
+{
+}
+
+public class OfferIndexViewModel
+{
+    public OfferIndexViewModel(object offers, object referenceData) { }
+}
+
+public class UpdateOfferStatusDto
+{
+    public UpdateOfferStatusDto(int id, OfferStatus status) { }
+}
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
     public class OffersController : AdminAreaControllerBase
     {
-        private readonly IOfferService offerService;
-        private readonly IReferenceDataService referenceDataService;
+        private readonly object offerService = null!;
+        private readonly object referenceDataService = null!;
 
-        public OffersController(IOfferService offerService, IReferenceDataService referenceDataService)
+        public OffersController(object offerService, object referenceDataService)
         {
             this.offerService = offerService;
             this.referenceDataService = referenceDataService;

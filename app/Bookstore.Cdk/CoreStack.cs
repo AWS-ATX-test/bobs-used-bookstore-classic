@@ -6,7 +6,7 @@ using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.SSM;
 using Amazon.CDK.CustomResources;
-using Bookstore.Common;
+
 using Constructs;
 
 namespace Bookstore.Cdk;
@@ -15,13 +15,18 @@ public class CoreStack : Stack
 {
     private const string UserPoolCallbackUrlRoot = "https://localhost:44329";
 
+    internal static class Constants
+    {
+        public const string AppName = "Bookstore.Cdk";
+    }
+
     public Bucket ImageBucket { get; private set; }
 
     public UserPool WebAppUserPool { get; private set; }
 
     private CfnUserPoolGroup _cognitoAdminUserGroup;
 
-    internal CoreStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
+internal CoreStack(Amazon.CDK.Construct scope, string id, IStackProps props = null) : base(scope, id, props)
     {
         CreateImageS3Bucket();
         CreateCloudFrontDistribution();

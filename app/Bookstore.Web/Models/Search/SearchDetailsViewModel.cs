@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Bookstore.Domain.Books;
 
@@ -50,6 +50,42 @@ namespace Bookstore.Web.ViewModel.Search
             Quantity = book.Quantity;
             BookId = book.Id;
             Summary = book.Summary;
+        }
+
+        public class Book
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Author { get; set; }
+            public Publisher Publisher { get; set; }
+            public string ISBN { get; set; }
+            public Genre Genre { get; set; }
+            public BookType BookType { get; set; }
+            public Condition Condition { get; set; }
+            public string CoverImageUrl { get; set; }
+            public decimal Price { get; set; }
+            public int Quantity { get; set; }
+            public string Summary { get; set; }
+        }
+
+        public class Publisher
+        {
+            public string Text { get; set; }
+        }
+
+        public class Genre
+        {
+            public string Text { get; set; }
+        }
+
+        public class BookType
+        {
+            public string Text { get; set; }
+        }
+
+        public class Condition
+        {
+            public string Text { get; set; }
         }
     }
 }

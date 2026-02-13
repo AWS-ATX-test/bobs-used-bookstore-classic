@@ -1,5 +1,4 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Books;
+using Bookstore.Domain;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +8,25 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Data.Repositories
 {
-    public class BookRepository : IBookRepository
+    public class BookStatistics
+    {
+        public int LowStock { get; set; }
+        public int OutOfStock { get; set; }
+        public int StockTotal { get; set; }
+    }
+
+    public class BookFilters
+    {
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public int? ConditionId { get; set; }
+        public int? BookTypeId { get; set; }
+        public int? GenreId { get; set; }
+        public int? PublisherId { get; set; }
+        public bool LowStock { get; set; }
+    }
+
+    public class BookRepository
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -18,7 +35,7 @@ namespace Bookstore.Data.Repositories
             this.dbContext = dbContext;
         }
 
-        async Task<Book> IBookRepository.GetAsync(int id)
+        public async Task<Book> GetAsync(int id)
         {
             return await dbContext.Book
                 .Include("Genre")
@@ -28,7 +45,7 @@ namespace Bookstore.Data.Repositories
                 .SingleAsync(x => x.Id == id);
         }
 
-        async Task<IPaginatedList<Book>> IBookRepository.ListAsync(BookFilters filters, int pageIndex, int pageSize)
+        public async Task<IPaginatedList<Book>> ListAsync(BookFilters filters, int pageIndex, int pageSize)
         {
             var query = dbContext.Book.AsQueryable();
 
@@ -80,7 +97,7 @@ namespace Bookstore.Data.Repositories
             return result;
         }
 
-        async Task<IPaginatedList<Book>> IBookRepository.ListAsync(string searchString, string sortBy, int pageIndex, int pageSize)
+        public async Task<IPaginatedList<Book>> ListAsync(string searchString, string sortBy, int pageIndex, int pageSize)
         {
             var query = dbContext.Book.AsQueryable();
 
@@ -119,12 +136,12 @@ namespace Bookstore.Data.Repositories
             return result;
         }
 
-        async Task IBookRepository.AddAsync(Book book)
+        public async Task AddAsync(Book book)
         {
             await Task.Run(() => dbContext.Book.Add(book));
         }
 
-        async Task IBookRepository.UpdateAsync(Book book)
+        public async Task UpdateAsync(Book book)
         {
             var existing = await dbContext.Book.FindAsync(book.Id);
 
@@ -136,12 +153,12 @@ namespace Bookstore.Data.Repositories
             }
         }
 
-        async Task IBookRepository.SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
             await dbContext.SaveChangesAsync();
         }
 
-        async Task<BookStatistics> IBookRepository.GetStatisticsAsync()
+        public async Task<BookStatistics> GetStatisticsAsync()
         {
             return await dbContext.Book
                 .GroupBy(x => 1)

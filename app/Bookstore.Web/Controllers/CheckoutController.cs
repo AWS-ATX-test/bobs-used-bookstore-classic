@@ -1,10 +1,17 @@
-﻿using Bookstore.Domain.Addresses;
+using Bookstore.Domain.Addresses;
 using Bookstore.Domain.Carts;
 using Bookstore.Domain.Orders;
 using Bookstore.Web.Helpers;
 using Bookstore.Web.ViewModel.Checkout;
-using System.Web.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
+
+public interface IShoppingCartService
+{
+    Task<object> GetShoppingCartAsync(string correlationId);
+}
+
 
 namespace Bookstore.Web.Controllers
 {
@@ -25,7 +32,8 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(HttpContext.GetShoppingCartCorrelationId());
+            var correlationId = HttpContext.Session.TryGetValue("ShoppingCartCorrelationId", out var id) ? Encoding.UTF8.GetString(id) : null;
+            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(correlationId);
             var addresses = await addressService.GetAddressesAsync(User.GetSub());
 
             return View(new CheckoutIndexViewModel(shoppingCart, addresses));
@@ -36,7 +44,8 @@ namespace Bookstore.Web.Controllers
         {
             if(!ModelState.IsValid) return  View(model);
 
-            var dto = new CreateOrderDto(User.GetSub(), HttpContext.GetShoppingCartCorrelationId(), model.SelectedAddressId);
+            var correlationId = HttpContext.Session.TryGetValue("ShoppingCartCorrelationId", out var id) ? Encoding.UTF8.GetString(id) : null;
+            var dto = new { UserId = User.GetSub(), CorrelationId = correlationId, AddressId = model.SelectedAddressId };
 
             var orderId = await orderService.CreateOrderAsync(dto);
 

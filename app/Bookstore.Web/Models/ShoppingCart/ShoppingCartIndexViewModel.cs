@@ -1,4 +1,6 @@
-﻿using Bookstore.Domain.Carts;
+using Bookstore.Domain;
+using Bookstore.Domain.Carts;
+using Bookstore.Domain.Carts.Enums;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,8 +16,7 @@ namespace Bookstore.Web.ViewModel.ShoppingCart
         {
             if (shoppingCart == null) return;
 
-            ShoppingCartItems = shoppingCart
-                .GetShoppingCartItems(ShoppingCartItemFilter.IncludeOutOfStockItems)
+            ShoppingCartItems = shoppingCart                .GetShoppingCartItems("IncludeOutOfStockItems")
                 .Select(c => new ShoppingCartIndexItemViewModel
                     {
                         BookId = c.Book.Id,

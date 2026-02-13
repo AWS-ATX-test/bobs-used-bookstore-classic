@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Bookstore.Web.ViewModel.Orders
 
         public List<OrderDetailsItemViewModel> OrderItems { get; set; } = new List<OrderDetailsItemViewModel>();
 
-        public OrderDetailsViewModel(Order order)
+        public OrderDetailsViewModel(dynamic order)
         {
             OrderId = order.Id;
             DeliveryDate = order.DeliveryDate;

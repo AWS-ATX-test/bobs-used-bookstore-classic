@@ -1,19 +1,21 @@
-﻿using Bookstore.Domain.Books;
-using Bookstore.Domain.Offers;
-using Bookstore.Domain.Orders;
+
 using Bookstore.Web.Areas.Admin.Models.Dashboard;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Bookstore.Web.Areas.Admin.Models.Dashboard;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
     public class DashboardController : AdminAreaControllerBase
     {
-        private readonly IOrderService orderService;
-        private readonly IOfferService offerService;
-        private readonly IBookService bookService;
+        private readonly dynamic orderService;
+        private readonly dynamic offerService;
+        private readonly dynamic bookService;
 
-        public DashboardController(IOrderService orderService, IOfferService offerService, IBookService bookService)
+        public DashboardController(dynamic orderService, dynamic offerService, dynamic bookService)
         {
             this.orderService = orderService;
             this.offerService = offerService;

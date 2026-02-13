@@ -1,7 +1,7 @@
 ﻿@model Bookstore.Web.ViewModel.PaginatedViewModel
 
 @{
-    var filters = HttpContext.Current.Request.QueryString;
+    var filters = Context.Request.Query;
 }
 
 <nav aria-label="Page navigation example">

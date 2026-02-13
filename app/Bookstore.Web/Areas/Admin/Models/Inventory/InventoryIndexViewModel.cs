@@ -1,19 +1,34 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Books;
-using Bookstore.Domain.ReferenceData;
+using Bookstore.Web.Models;
+using Bookstore.Web.Areas.Admin.Models.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace Bookstore.Web.Areas.Admin.Models.Inventory
 {
+    public class ReferenceDataItem
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+        public ReferenceDataType DataType { get; set; }
+    }
+
+    public enum ReferenceDataType
+    {
+        Condition,
+        BookType,
+        Genre,
+        Publisher
+    }
     public class InventoryIndexViewModel : PaginatedViewModel
     {
 
         public List<InventoryIndexListItemViewModel> Items { get; set; } = new List<InventoryIndexListItemViewModel>();
 
-        public BookFilters Filters { get; set; } = new BookFilters();
+        public object Filters { get; set; } = new object();
 
         public IEnumerable<SelectListItem> Publishers { get; set; } = new List<SelectListItem>();
 
@@ -25,7 +40,7 @@ namespace Bookstore.Web.Areas.Admin.Models.Inventory
 
         public InventoryIndexViewModel() { }
 
-        public InventoryIndexViewModel(IPaginatedList<Book> books, IEnumerable<ReferenceDataItem> referenceDataItems)
+        public InventoryIndexViewModel(dynamic books, IEnumerable<ReferenceDataItem> referenceDataItems)
         {
             foreach (var book in books)
             {

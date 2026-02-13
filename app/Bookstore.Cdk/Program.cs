@@ -1,7 +1,11 @@
-﻿using Amazon.CDK;
-using Bookstore.Common;
+using Amazon.CDK;
 
 namespace Bookstore.Cdk;
+
+internal static class Constants
+{
+    public static string AppName => "Bookstore";
+}
 
 internal sealed class Program
 {

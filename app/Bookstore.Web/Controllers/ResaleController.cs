@@ -1,21 +1,21 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.ViewModel.Resale;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Bookstore.Web.Controllers
 {
     public class ResaleController : Controller
     {
         private readonly IReferenceDataService referenceDataService;
-        private readonly IOfferService offerService;
+        private readonly object offerService = null;
 
-        public ResaleController(IReferenceDataService referenceDataService, IOfferService offerService)
+        public ResaleController(IReferenceDataService referenceDataService)
         {
             this.referenceDataService = referenceDataService;
-            this.offerService = offerService;
         }
 
         public async Task<ActionResult> Index()
@@ -37,18 +37,20 @@ namespace Bookstore.Web.Controllers
         {
             if (!ModelState.IsValid) return View();
 
-            var dto = new CreateOfferDto(
-                User.GetSub(), 
-                resaleViewModel.BookName, 
-                resaleViewModel.Author, 
-                resaleViewModel.ISBN, 
-                resaleViewModel.SelectedBookTypeId, 
-                resaleViewModel.SelectedConditionId, 
-                resaleViewModel.SelectedGenreId, 
-                resaleViewModel.SelectedPublisherId, 
-                resaleViewModel.BookPrice);
+            dynamic dto = new
+            {
+                UserId = User.GetSub(),
+                BookName = resaleViewModel.BookName,
+                Author = resaleViewModel.Author,
+                ISBN = resaleViewModel.ISBN,
+                BookTypeId = resaleViewModel.SelectedBookTypeId,
+                ConditionId = resaleViewModel.SelectedConditionId,
+                GenreId = resaleViewModel.SelectedGenreId,
+                PublisherId = resaleViewModel.SelectedPublisherId,
+                Price = resaleViewModel.BookPrice
+            };
 
-            await offerService.CreateOfferAsync(dto);
+            await ((dynamic)offerService).CreateOfferAsync(dto);
 
             return RedirectToAction(nameof(Index));
         }

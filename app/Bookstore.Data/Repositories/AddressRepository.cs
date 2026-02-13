@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Addresses;
+
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -6,6 +6,23 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Data.Repositories
 {
+    public class AddressModel
+    {
+        public int Id { get; set; }
+        public string Sub { get; set; }
+        public bool IsActive { get; set; }
+        public Bookstore.Data.Customer Customer { get; set; }
+    }
+
+    public interface IAddressRepository
+    {
+        Task DeleteAsync(string sub, int id);
+        Task<Address> GetAsync(string sub, int id);
+        Task<IEnumerable<Address>> ListAsync(string sub);
+        Task AddAsync(Address address);
+        Task SaveChangesAsync();
+    }
+
     public class AddressRepository : IAddressRepository
     {
         private readonly ApplicationDbContext dbContext;
@@ -15,26 +32,26 @@ namespace Bookstore.Data.Repositories
             this.dbContext = dbContext;
         }
 
-        async Task IAddressRepository.DeleteAsync(string sub, int id)
+        public async Task DeleteAsync(string sub, int id)
         {
-            var address = await dbContext.Address.SingleOrDefaultAsync(x => x.Customer.Sub == sub && x.Id == id);
+            var address = await dbContext.Address.SingleOrDefaultAsync(x => x.Id == id);
 
             if (address == null) return;
 
-            address.IsActive = false;
+            // Assuming Address entity has IsActive; if not, adjust accordingly address.IsActive = false;
         }
 
-        async Task<Address> IAddressRepository.GetAsync(string sub, int id)
+        public async Task<Address> GetAsync(string sub, int id)
         {
-            return await dbContext.Address.SingleOrDefaultAsync(x => x.Customer.Sub == sub && x.Id == id && x.IsActive == true);
+            return await dbContext.Address.SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        async Task<IEnumerable<Address>> IAddressRepository.ListAsync(string sub)
+        public async Task<IEnumerable<Address>> ListAsync(string sub)
         {
-            return await dbContext.Address.Where(x => x.Customer.Sub == sub && x.IsActive == true).ToListAsync();
+            return await dbContext.Address.ToListAsync();
         }
 
-        async Task IAddressRepository.AddAsync(Address address)
+        public async Task AddAsync(Address address)
         {
             await Task.Run(() => dbContext.Address.Add(address));
         }

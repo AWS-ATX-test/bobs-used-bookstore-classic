@@ -1,8 +1,10 @@
-﻿using Microsoft.Owin;
 using System;
 using System.Drawing;
 using System.Net;
 using System.Web;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Owin;
+
 
 namespace Bookstore.Web.Helpers
 {

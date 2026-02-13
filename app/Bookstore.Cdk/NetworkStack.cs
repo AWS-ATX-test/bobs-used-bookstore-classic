@@ -8,15 +8,15 @@ public class NetworkStack : Stack
 {
     public Vpc Vpc { get; private set; }
 
-    internal NetworkStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
+internal NetworkStack(Constructs.Construct scope, string id, IStackProps props = null) : base(scope, id, props)
     {
         // Create a new vpc spanning two AZs and with public and private subnets
         // to host the application resources
         Vpc = new Vpc(this, "VPC", new VpcProps
         {
-            IpAddresses = IpAddresses.Cidr("10.0.0.0/16"),
+            Cidr = "10.0.0.0/16",
             // Cap at 2 AZs in case we are deployed to a region with only 2
-            MaxAzs = 2,            
+            MaxAzs = 2,
             SubnetConfiguration = new[]
             {
                 new SubnetConfiguration
@@ -28,7 +28,7 @@ public class NetworkStack : Stack
                 new SubnetConfiguration
                 {
                     CidrMask = 24,
-                    SubnetType = SubnetType.PRIVATE_WITH_EGRESS,
+                    SubnetType = SubnetType.PRIVATE,
                     Name = "Private"
                 }
             }

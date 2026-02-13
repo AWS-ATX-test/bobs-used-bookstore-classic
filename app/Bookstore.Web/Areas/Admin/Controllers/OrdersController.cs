@@ -1,15 +1,18 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Orders;
-using Bookstore.Domain.Orders;
-using System.Web.Mvc;
+
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
     public class OrdersController : AdminAreaControllerBase
     {
-        private readonly IOrderService orderService;
+        public class OrderFilters { }
 
-        public OrdersController(IOrderService orderService)
+        private readonly dynamic orderService;
+
+        public OrdersController(dynamic orderService)
         {
             this.orderService = orderService;
         }
@@ -31,7 +34,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Details(OrderDetailsViewModel model)
         {
-            var dto = new UpdateOrderStatusDto(model.OrderId, model.SelectedOrderStatus);
+            var dto = new { OrderId = model.OrderId, SelectedOrderStatus = model.SelectedOrderStatus };
 
             await orderService.UpdateOrderStatusAsync(dto);
 

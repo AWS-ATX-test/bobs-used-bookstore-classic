@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Domain
 {
-    public class PaginatedList<T> : List<T>, IPaginatedList<T> where T : Entity
+    public interface IHasId
+    {
+        int Id { get; }
+    }
+
+public class PaginatedList<T> : List<T>
     {
         private readonly IQueryable<T> source;
         private readonly int pageIndex;
@@ -18,7 +23,7 @@ namespace Bookstore.Domain
 
         private PaginatedList(){ }
 
-        public PaginatedList(IQueryable<T> source, int pageIndex, int pageSize) 
+        public PaginatedList(IQueryable<T> source, int pageIndex, int pageSize)
         {
             this.source = source;
             this.pageIndex = pageIndex;
@@ -28,7 +33,7 @@ namespace Bookstore.Domain
         public async Task PopulateAsync()
         {
             var count = await source.CountAsync();
-            var items = await source.OrderBy(x => x.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var items = await source.OrderBy(x => x).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
             PageIndex = pageIndex;
 

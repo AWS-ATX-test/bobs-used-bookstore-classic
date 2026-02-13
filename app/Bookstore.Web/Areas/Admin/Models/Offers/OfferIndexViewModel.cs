@@ -1,39 +1,41 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Offers;
+// using Bookstore.Domain;
+// using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace Bookstore.Web.Areas.Admin.Models.Offers
 {
+    public enum ReferenceDataType
+    {
+        Genre,
+        Condition
+    }
     public class OfferIndexViewModel : PaginatedViewModel
     {
-        public OfferIndexViewModel(IPaginatedList<Offer> offers, IEnumerable<ReferenceDataItem> referenceData)
+public OfferIndexViewModel(IEnumerable<ReferenceDataItem> offers, IEnumerable<ReferenceDataItem> referenceData)
         {
             foreach (var offer in offers)
             {
                 Items.Add(new OfferIndexItemViewModel
                 {
                     OfferId = offer.Id,
-                    BookName = offer.BookName,
-                    Author = offer.Author,
-                    Genre = offer.Genre.Text,
-                    CustomerName = offer.Customer.FullName,
-                    OfferStatus = offer.OfferStatus,
-                    OfferDate = offer.CreatedOn,
-                    OfferPrice = offer.BookPrice,
-                    Condition = offer.Condition.Text
+                    BookName = offer.Text,
+                    Author = string.Empty,
+                    Genre = string.Empty,
+                    CustomerName = string.Empty,
+                    OfferStatus = 0,
+                    OfferDate = DateTime.Now,
+                    OfferPrice = 0m,
+                    Condition = string.Empty
                 });
             }
 
-            PageIndex = offers.PageIndex;
-            PageSize = offers.Count;
-            PageCount = offers.TotalPages;
-            HasNextPage = offers.HasNextPage;
-            HasPreviousPage = offers.HasPreviousPage;
-            PaginationButtons = offers.GetPageList(5).ToList();
+
 
             Genres = referenceData.Where(x => x.DataType == ReferenceDataType.Genre).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
             BookConditions = referenceData.Where(x => x.DataType == ReferenceDataType.Condition).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
@@ -67,5 +69,23 @@ namespace Bookstore.Web.Areas.Admin.Models.Offers
         public decimal OfferPrice { get; internal set; }
 
         public string Condition { get; internal set; }
+    }
+
+    public class OfferFilters
+    {
+        public string BookName { get; set; }
+        public string Author { get; set; }
+        public int? GenreId { get; set; }
+        public int? ConditionId { get; set; }
+        public int? OfferStatusId { get; set; }
+        public string CustomerName { get; set; }
+    }
+
+    public enum OfferStatus
+    {
+        Pending = 0,
+        Accepted = 1,
+        Rejected = 2,
+        Expired = 3
     }
 }

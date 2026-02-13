@@ -36,7 +36,7 @@
 
             <div class="col-12">
                 <label class="visually-hidden" for="OfferStatusSelect">Offer status</label>
-                @Html.EnumDropDownListFor(a => a.Filters.OfferStatus, "All Offer Statuses", new { @class = "form-select" })
+                @Html.DropDownListFor(a => a.Filters.OfferStatusId, Enum.GetValues(typeof(OfferStatus)).Cast<OfferStatus>().Select(e => new SelectListItem { Value = ((int)e).ToString(), Text = e.ToString() }), "All Offer Statuses", new { @class = "form-select" })
             </div>
 
             <div class="col-12">
@@ -110,7 +110,7 @@
 
                                 case OfferStatus.Received:
 
-                                    <button type="submit" class="btn btn-link p-0" formaction="@($"/Admin/Offers/PaidAsync/{offer.OfferId}")">Make Payment</button>                                    
+                                    <button type="submit" class="btn btn-link p-0" formaction="@($"/Admin/Offers/PaidAsync/{offer.OfferId}")">Make Payment</button>
 
                                     break;
                             }

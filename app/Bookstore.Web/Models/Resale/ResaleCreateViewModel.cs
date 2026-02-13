@@ -1,7 +1,13 @@
-﻿using Bookstore.Domain.ReferenceData;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace Bookstore.Web.ViewModel.Resale
 {
@@ -9,12 +15,12 @@ namespace Bookstore.Web.ViewModel.Resale
     {
         public ResaleCreateViewModel() { }
 
-        public ResaleCreateViewModel(IEnumerable<ReferenceDataItem> referenceDataItems)
+        public ResaleCreateViewModel(IEnumerable<string> referenceDataItems)
         {
-            BookTypes = referenceDataItems.Where(x => x.DataType == ReferenceDataType.BookType).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            Publishers = referenceDataItems.Where(x => x.DataType == ReferenceDataType.Publisher).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            Genres = referenceDataItems.Where(x => x.DataType == ReferenceDataType.Genre).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            Conditions = referenceDataItems.Where(x => x.DataType == ReferenceDataType.Condition).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
+            BookTypes = referenceDataItems.Where(x => x.StartsWith("BookType:")).Select(x => new SelectListItem { Value = x.Split(':')[0], Text = x.Split(':')[1] });
+            Publishers = referenceDataItems.Where(x => x.StartsWith("Publisher:")).Select(x => new SelectListItem { Value = x.Split(':')[0], Text = x.Split(':')[1] });
+            Genres = referenceDataItems.Where(x => x.StartsWith("Genre:")).Select(x => new SelectListItem { Value = x.Split(':')[0], Text = x.Split(':')[1] });
+            Conditions = referenceDataItems.Where(x => x.StartsWith("Condition:")).Select(x => new SelectListItem { Value = x.Split(':')[0], Text = x.Split(':')[1] });
         }
 
         public IEnumerable<SelectListItem> BookTypes { get; internal set; }

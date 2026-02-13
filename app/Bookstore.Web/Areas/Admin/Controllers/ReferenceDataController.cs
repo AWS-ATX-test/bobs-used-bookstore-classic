@@ -1,7 +1,42 @@
-﻿using Bookstore.Domain.ReferenceData;
+
 using Bookstore.Web.Areas.Admin.Models.ReferenceData;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
+{
+    public enum ReferenceDataType
+    {
+        // Define enum members as needed. A minimal placeholder is sufficient.
+        Example    }
+
+public class CreateReferenceDataItemDto
+{
+    public ReferenceDataType SelectedReferenceDataType { get; set; }
+    public string Text { get; set; }
+
+    public CreateReferenceDataItemDto(ReferenceDataType selectedReferenceDataType, string text)
+    {
+        SelectedReferenceDataType = selectedReferenceDataType;
+        Text = text;
+    }
+}
+
+public class UpdateReferenceDataItemDto
+{
+    public int Id { get; set; }
+    public ReferenceDataType SelectedReferenceDataType { get; set; }
+    public string Text { get; set; }
+
+    public UpdateReferenceDataItemDto(int id, ReferenceDataType selectedReferenceDataType, string text)
+    {
+        Id = id;
+        SelectedReferenceDataType = selectedReferenceDataType;
+        Text = text;
+    }
+}
+}
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
@@ -14,7 +49,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             this.referenceDataService = referenceDataService;
         }
 
-        public async Task<ActionResult> Index(ReferenceDataFilters filters, int pageIndex = 1, int pageSize = 10)
+        public async Task<ActionResult> Index(object filters, int pageIndex = 1, int pageSize = 10)
         {
             var referenceDataItems = await referenceDataService.GetReferenceDataAsync(filters, pageIndex, pageSize);
 

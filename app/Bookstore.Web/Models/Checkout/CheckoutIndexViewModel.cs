@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Carts;
+using Bookstore.Domain.Carts;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace Bookstore.Web.ViewModel.Checkout
                 ZipCode = x.ZipCode
             }).ToList();
 
-            ShoppingCartItems = shoppingCart.GetShoppingCartItems(ShoppingCartItemFilter.IncludeOutOfStockItems).Select(x => new CheckoutItemViewModel
+            ShoppingCartItems = shoppingCart.GetShoppingCartItems().Select(x => new CheckoutItemViewModel
             {
                 BookName = x.Book.Name,
                 ImageUrl = x.Book.CoverImageUrl,
@@ -39,7 +39,7 @@ namespace Bookstore.Web.ViewModel.Checkout
                 OutOfStock = x.Book.Quantity <= 0
             }).ToList();
 
-            Total = shoppingCart.GetSubTotal(ShoppingCartItemFilter.ExcludeOutOfStockItems);
+            Total = shoppingCart.GetSubTotal();
 
             SelectedAddressId = Addresses.Count > 0 ? Addresses.First().Id : 0;
         }

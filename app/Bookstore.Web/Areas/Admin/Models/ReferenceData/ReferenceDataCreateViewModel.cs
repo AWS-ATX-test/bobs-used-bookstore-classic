@@ -1,6 +1,8 @@
-﻿using Bookstore.Domain.ReferenceData;
+using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
 {
@@ -8,7 +10,7 @@ namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
     {
         public ReferenceDataItemCreateUpdateViewModel() { }
 
-        public ReferenceDataItemCreateUpdateViewModel(ReferenceDataItem referenceDataItem)
+        public ReferenceDataItemCreateUpdateViewModel(Bookstore.Domain.ReferenceData.ReferenceDataItem referenceDataItem)
         {
             Id = referenceDataItem.Id;
             SelectedReferenceDataType = referenceDataItem.DataType;
@@ -17,7 +19,7 @@ namespace Bookstore.Web.Areas.Admin.Models.ReferenceData
 
         public int Id { get; set; }
 
-        public ReferenceDataType SelectedReferenceDataType { get; set; }
+        public Bookstore.Domain.ReferenceData.DataType SelectedReferenceDataType { get; set; }
 
         public string Text { get; set; }
 

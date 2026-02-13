@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace Bookstore.Web.Areas.Admin.Models.Orders
 {
+    public class OrderFilters { }
+
     public class OrderIndexViewModel : PaginatedViewModel
     {
         public List<OrderIndexListItemViewModel> Items { get; set; } = new List<OrderIndexListItemViewModel>();
@@ -30,7 +32,7 @@ namespace Bookstore.Web.Areas.Admin.Models.Orders
             Filters = filters;
 
             PageIndex = orderDtos.PageIndex;
-            PageSize = orderDtos.Count;
+            PageSize = orderDtos.PageSize;
             PageCount = orderDtos.TotalPages;
             HasNextPage = orderDtos.HasNextPage;
             HasPreviousPage = orderDtos.HasPreviousPage;
@@ -44,7 +46,7 @@ namespace Bookstore.Web.Areas.Admin.Models.Orders
 
         public string CustomerName { get; set; }
 
-        public OrderStatus OrderStatus { get; set; }
+        public object OrderStatus { get; set; }
 
         public DateTime DeliveryDate { get; set; }
 

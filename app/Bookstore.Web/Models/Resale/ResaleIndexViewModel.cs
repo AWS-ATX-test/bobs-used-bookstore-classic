@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Offers;
 using System.Collections.Generic;
 
@@ -8,7 +8,7 @@ namespace Bookstore.Web.ViewModel.Resale
     {
         public List<ResaleIndexItemViewModel> Items { get; set; } = new List<ResaleIndexItemViewModel>();
 
-        public ResaleIndexViewModel(IEnumerable<Offer> offers)
+        public ResaleIndexViewModel(IEnumerable<dynamic> offers)
         {
             foreach (var offer in offers)
             {

@@ -1,12 +1,41 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.Carts;
 using Bookstore.Web.ViewModel.Search;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System;
+
 
 namespace Bookstore.Web.Controllers
 {
+    public class AddToShoppingCartDto
+    {
+        public string CorrelationId { get; set; }
+        public int BookId { get; set; }
+        public int Quantity { get; set; }
+
+        public AddToShoppingCartDto(string correlationId, int bookId, int quantity)
+        {
+            CorrelationId = correlationId;
+            BookId = bookId;
+            Quantity = quantity;
+        }
+    }
+
+    public class AddToWishlistDto
+    {
+        public string CorrelationId { get; set; }
+        public int BookId { get; set; }
+
+        public AddToWishlistDto(string correlationId, int bookId)
+        {
+            CorrelationId = correlationId;
+            BookId = bookId;
+        }
+    }
+
     [AllowAnonymous]
     public class SearchController : Controller
     {
@@ -35,7 +64,7 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> AddItemToShoppingCart(int bookId)
         {
-            var dto = new AddToShoppingCartDto(HttpContext.GetShoppingCartCorrelationId(), bookId, 1);
+            var dto = new AddToShoppingCartDto(Guid.NewGuid().ToString(), bookId, 1);
 
             await shoppingCartService.AddToShoppingCartAsync(dto);
 
@@ -46,7 +75,7 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> AddItemToWishlist(int bookId)
         {
-            var dto = new AddToWishlistDto(HttpContext.GetShoppingCartCorrelationId(), bookId);
+            var dto = new AddToWishlistDto(Guid.NewGuid().ToString(), bookId);
 
             await shoppingCartService.AddToWishlistAsync(dto);
 

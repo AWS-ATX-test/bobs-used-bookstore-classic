@@ -2,7 +2,7 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.RDS;
 using Amazon.CDK.AWS.SSM;
-using Bookstore.Common;
+
 using Constructs;
 using InstanceType = Amazon.CDK.AWS.EC2.InstanceType;
 
@@ -19,7 +19,7 @@ public class DatabaseStack : Stack
 
     public DatabaseInstance Database { get; set; }
 
-    internal DatabaseStack(Construct scope, string id, DatabaseStackProps props) : base(scope, id, props)
+    internal DatabaseStack(Amazon.CDK.Construct scope, string id, DatabaseStackProps props) : base(scope, id, props)
     {
         var securityGroup = CreateSecurityGroup(props);
 
@@ -44,7 +44,7 @@ public class DatabaseStack : Stack
             Vpc = props.Vpc,
             VpcSubnets = new SubnetSelection
             {
-                SubnetType = SubnetType.PRIVATE_WITH_EGRESS
+                SubnetType = SubnetType.PRIVATE
             },
             // SQL Server 2017 Express Edition, in conjunction with a db.t2.micro instance type,
             // fits inside the free tier for new accounts
@@ -59,7 +59,7 @@ public class DatabaseStack : Stack
             },
             InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.SMALL),
 
-            InstanceIdentifier = $"{Constants.AppName}Database",
+            InstanceIdentifier = $"BookstoreDatabase",
 
             // As this is a sample app, turn off automated backups to avoid any storage costs
             // of automated backup snapshots. It also helps the stack launch a little faster by
@@ -77,7 +77,7 @@ public class DatabaseStack : Stack
 
         _ = new StringParameter(this, "DatabaseConnectionStringSSMParameter", new StringParameterProps
         {
-            ParameterName = $"/{Constants.AppName}/Database/ConnectionStrings/BookstoreDatabaseConnection",
+            ParameterName = $"/Bookstore/Database/ConnectionStrings/BookstoreDatabaseConnection",
             StringValue = $"Server={server};Database={database};User Id={userId};Password={password};"
         });
     }
